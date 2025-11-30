@@ -19,14 +19,20 @@
         const maxSize = Number($root.data('unitMaxSize')) || 1;
         const $unit = $root.find('[data-points-unit]');
         const $total = $root.find('[data-points-total]');
+        const baseOtherPoints = Number($root.data('otherPoints')) || 0;
+        const $other = $root.find('[data-points-other]');
         const $baseRadios = $root.find('[data-base-cost]');
         const $inputs = $root.find('#unit-options').find('input, select');
+        const $restrictedInputs = $root.find('[data-requires-experience]');
+
+        $other.text(baseOtherPoints);
+        $total.text(baseOtherPoints);
 
         function updatePoints() {
             let total = 0;
             $baseRadios.each(function () {
                 if ($(this).is(':checked')) {
-                    total += Number($(this).val()) || 0;
+                    total += Number($(this).data('baseCost')) || 0;
                 }
             });
 
@@ -54,12 +60,33 @@
             });
 
             $unit.text(total);
-            $total.text(total);
+            $total.text(total + baseOtherPoints);
         }
 
         $baseRadios.on('change', updatePoints);
         $inputs.on('input change', updatePoints);
         updatePoints();
+
+        function updateOptionVisibility() {
+            const currentExp = $baseRadios.filter(':checked').val();
+            $restrictedInputs.each(function () {
+                const $input = $(this);
+                const required = $input.data('requiresExperience');
+                const $block = $input.closest('[data-option-block]');
+
+                if (!required || required === currentExp) {
+                    $block.show();
+                } else {
+                    if ($input.attr('type') === 'number') {
+                        $input.val(0);
+                    }
+                    $block.hide();
+                }
+            });
+        }
+
+        $baseRadios.on('change', updateOptionVisibility);
+        updateOptionVisibility();
     }
 
     $(function () {
@@ -67,4 +94,5 @@
         initUnitForm();
     });
 })(jQuery);
+
 

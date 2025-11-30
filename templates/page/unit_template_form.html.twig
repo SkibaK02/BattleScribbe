@@ -3,7 +3,10 @@
 {% block title %}{{ template.name }} | Configuration{% endblock %}
 
 {% block body %}
-    <div id="unit-form-root" data-unit-form data-unit-max-size="{{ template.maxSize ?? template.minSize ?? 1 }}">
+    <div id="unit-form-root"
+         data-unit-form
+         data-unit-max-size="{{ template.maxSize ?? template.minSize ?? 1 }}"
+         data-other-points="{{ other_points|default(0) }}">
         <div class="bs-card mb-4">
             <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
                 <div>
@@ -27,19 +30,38 @@
             </div>
         </div>
 
+        {% if errors is defined and errors %}
+            <div class="alert flash-error mb-4">
+                <ul class="mb-0">
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
         {% if config is null %}
             <div class="bs-card">
                 <p>The configurator for this unit is not ready yet. Please check back later.</p>
                 <a class="bs-btn w-auto mt-3" href="{{ path('app_division_slots', {id: template.division.id}) }}">← Back to slots</a>
             </div>
         {% else %}
-            <div class="unit-layout">
+            <form class="unit-layout" method="post" id="unit-build-form">
+                <input type="hidden" name="_token" value="{{ csrf_token('unit_template_' ~ template.id) }}">
+                {% if build_id %}
+                    <input type="hidden" name="build_id" value="{{ build_id }}">
+                {% endif %}
                 <section>
                     <h2>Base cost</h2>
                     <div class="base-costs">
                         {% for cost in config.experience_costs %}
                             <label class="radio-pill">
-                                <input type="radio" name="experience" value="{{ cost.cost }}" data-base-cost required {{ loop.first ? 'checked' : '' }}>
+                                <input type="radio"
+                                       name="experience"
+                                       value="{{ cost.key }}"
+                                       data-base-cost="{{ cost.cost }}"
+                                       required
+                                       {{ (form_data.experience is defined and form_data.experience == cost.key) or (form_data.experience is not defined and loop.first) ? 'checked' : '' }}>
                                 <span>{{ cost.label }} ({{ cost.cost }} pts)</span>
                             </label>
                         {% endfor %}
@@ -53,50 +75,56 @@
                     </ul>
                 </section>
 
-                    <section>
-                        <h2>Options</h2>
-                        <form id="unit-options" class="bs-form">
-                            {% for option in config.options %}
-                                <div class="option">
-                                    <label>{{ option.label }}</label>
-                                    {% if option.type == 'number' %}
-                                        <input type="number"
+                <section>
+                    <h2>Options</h2>
+                    <div id="unit-options" class="bs-form">
+                        {% for option in config.options %}
+                            <div class="option" data-option-block>
+                                <label>{{ option.label }}</label>
+                                {% if option.type == 'number' %}
+                                    <input type="number"
+                                           name="{{ option.name }}"
+                                           min="0"
+                                           max="{{ option.max|default(0) }}"
+                                           value="{{ form_data[option.name]|default(0) }}"
+                                           data-cost-per="{{ option.cost_per|default(0) }}"
+                                           data-requires-experience="{{ option.restricted_to|default('') }}">
+                                    <small class="text-muted">max {{ option.max|default(0) }}</small>
+                                {% elseif option.type == 'checkbox' %}
+                                    <div class="form-check">
+                                        <input class="form-check-input"
+                                               type="checkbox"
+                                               id="{{ option.name }}"
                                                name="{{ option.name }}"
-                                               min="0"
-                                               max="{{ option.max|default(0) }}"
-                                               value="0"
-                                               data-cost-per="{{ option.cost_per|default(0) }}">
-                                        <small class="text-muted">max {{ option.max|default(0) }}</small>
-                                    {% elseif option.type == 'checkbox' %}
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox"
-                                                   id="{{ option.name }}"
-                                                   name="{{ option.name }}"
-                                                   data-cost="{{ option.cost|default(0) }}"
-                                                   {% if option.per_model|default(false) %}data-per-model="true" data-max-per-model="{{ option.max_per_model|default(0) }}"{% endif %}>
-                                            <label class="form-check-label text-muted small" for="{{ option.name }}">Enable option</label>
-                                        </div>
-                                    {% elseif option.type == 'select' %}
-                                        <select name="{{ option.name }}">
-                                            <option value="0" data-cost="0">None</option>
-                                            {% for choice in option.options|default([]) %}
-                                                <option value="{{ loop.index }}" data-cost="{{ choice.cost|default(0) }}" data-cost-per="{{ choice.cost_per_model|default(0) }}">
-                                                    {{ choice.label }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-
-                            <div class="option-buttons">
-                                <button type="button" class="bs-btn w-auto" id="save-unit">Save</button>
-                                <a class="bs-btn bs-btn-alt w-auto" href="{{ path('app_division_slots', {id: template.division.id}) }}">Save & View</a>
-                                <a class="bs-btn bs-btn-danger w-auto" href="{{ path('app_division_slots', {id: template.division.id}) }}">Reset</a>
+                                               data-cost="{{ option.cost|default(0) }}"
+                                               {% if option.per_model|default(false) %}data-per-model="true" data-max-per-model="{{ option.max_per_model|default(0) }}"{% endif %}
+                                               {% if form_data[option.name]|default(false) %}checked{% endif %}>
+                                        <label class="form-check-label text-muted small" for="{{ option.name }}">Enable option</label>
+                                    </div>
+                                {% elseif option.type == 'select' %}
+                                    <select name="{{ option.name }}">
+                                        <option value="none" data-cost="0">None</option>
+                                        {% for choice in option.options|default([]) %}
+                                            <option value="{{ choice.value }}"
+                                                    data-cost="{{ choice.cost|default(0) }}"
+                                                    data-cost-per="{{ choice.cost_per_model|default(0) }}"
+                                                    {% if form_data[option.name]|default('none') == choice.value %}selected{% endif %}>
+                                                {{ choice.label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
                             </div>
-                        </form>
-                    </section>
-            </div>
+                        {% endfor %}
+
+                        <div class="option-buttons">
+                            <button type="submit" class="bs-btn w-auto" id="save-unit">Save</button>
+                            <a class="bs-btn bs-btn-alt w-auto" href="{{ path('app_division_slots', {id: template.division.id}) }}">Back to slots</a>
+                            <a class="bs-btn bs-btn-danger w-auto" href="{{ path('app_unit_template_form', {id: template.id}) }}">Reset</a>
+                        </div>
+                    </div>
+                </section>
+            </form>
         {% endif %}
     </div>
 {% endblock %}

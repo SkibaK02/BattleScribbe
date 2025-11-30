@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ division.name }} | Sloty{% endblock %}
+{% block title %}{{ division.name }} | Slots{% endblock %}
 
 {% block body %}
     <div class="bs-card mb-4">
@@ -18,11 +18,11 @@
             </div>
             <div class="points-box">
                 <span class="points-label">Other Units</span>
-                <span class="points-value">0</span>
+                <span class="points-value">{{ otherPoints }}</span>
             </div>
             <div class="points-box">
                 <span class="points-label">Points Total</span>
-                <span class="points-value" data-points-total>0</span>
+                <span class="points-value">{{ otherPoints }}</span>
             </div>
         </div>
     </div>
@@ -40,15 +40,42 @@
                     {% else %}
                         <ul>
                             {% for template in templates %}
+                                {% set templateBuilds = builds[template.id]|default([]) %}
                                 <li>
                                     <div>
                                         <strong>{{ template.name }}</strong>
                                         <span class="meta">({{ template.experience }}, {{ template.minSize }}-{{ template.maxSize }} models)</span>
                                     </div>
                                     <p>{{ template.description }}</p>
+                                    {% if templateBuilds %}
+                                        <div class="slot-builds">
+                                            <p class="text-muted mb-1 small">Added units:</p>
+                                            <ul>
+                                                {% for build in templateBuilds %}
+                                                    <li class="slot-build-line">
+                                                        <span>{{ build.experience }} — {{ build.totalCost }} pts</span>
+                                                        <span class="slot-build-actions">
+                                                            <a class="bs-btn bs-btn-alt w-auto"
+                                                               href="{{ path('app_unit_template_form', {id: template.id, build: build.id}) }}">Edit</a>
+                                                            <form method="post"
+                                                                  action="{{ path('app_unit_build_delete', {id: build.id}) }}"
+                                                                  onsubmit="return confirm('Remove this unit?');">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_unit_build_' ~ build.id) }}">
+                                                                <button type="submit" class="bs-btn bs-btn-danger w-auto">Delete</button>
+                                                            </form>
+                                                        </span>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% else %}
+                                        <p class="slot-empty mb-2">No units added yet.</p>
+                                    {% endif %}
                                     <div class="slot-actions">
                                         <span class="cost">{{ template.baseCost }} pts</span>
-                                        <a class="bs-btn w-auto" href="{{ path('app_unit_template_form', {id: template.id}) }}">Configure</a>
+                                        <a class="bs-btn w-auto" href="{{ path('app_unit_template_form', {id: template.id}) }}">
+                                            {{ templateBuilds ? 'Add another' : 'Add' }}
+                                        </a>
                                     </div>
                                 </li>
                             {% endfor %}
