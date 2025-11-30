@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BattleScribe | Start{% endblock %}
+
+{% block body %}
+    <div class="bs-card bs-card-hero">
+        <h1 class="mb-3">Welcome to BattleScribe</h1>
+        <p class="mb-4">Build roster lists based on factions, divisions, and unit templates. The whole experience is secured behind authentication and ready to evolve.</p>
+        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
+            <a class="bs-btn" href="{{ path('app_login') }}">Go to login</a>
+            <a class="bs-btn bs-btn-alt" href="{{ path('app_register_form') }}">Create an account</a>
+        </div>
+    </div>
+{% endblock %}

@@ -5,7 +5,10 @@ security:
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
 
     firewalls:
         dev:
@@ -14,7 +17,22 @@ security:
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: /login
+                default_target_path: /app
+                enable_csrf: true
+            json_login:
+                check_path: /login
+                username_path: email
+                password_path: password
+                success_handler: App\Security\JsonLoginSuccessHandler
+                failure_handler: App\Security\JsonLoginFailureHandler
+            logout:
+                path: /logout
+                invalidate_session: true
+                target: /
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -24,8 +42,12 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/assets, roles: PUBLIC_ACCESS }
+        - { path: ^/app, roles: ROLE_USER }
+        - { path: ^/api, roles: ROLE_USER }
 
 when@test:
     security:

@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ division.name }} | Sloty{% endblock %}
+
+{% block body %}
+    <div class="bs-card mb-4">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
+            <div>
+                <h1 class="mb-1">{{ division.name }}</h1>
+                <p class="text-muted mb-0">Pick the slots available for this division.</p>
+            </div>
+            <a class="bs-btn w-auto" href="{{ path('app_faction_divisions', {id: division.faction.id}) }}">← Change division</a>
+        </div>
+        <div class="points-panel">
+            <div class="points-box">
+                <span class="points-label">This Unit</span>
+                <span class="points-value" data-points-unit>0</span>
+            </div>
+            <div class="points-box">
+                <span class="points-label">Other Units</span>
+                <span class="points-value">0</span>
+            </div>
+            <div class="points-box">
+                <span class="points-label">Points Total</span>
+                <span class="points-value" data-points-total>0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="slot-grid">
+        {% for slotName, templates in slots %}
+            <div class="slot-card open" data-slot-card>
+                <button type="button" class="slot-header" data-slot-toggle>
+                    <span>[<span class="state">-</span>] {{ slotName }}</span>
+                    <small>toggle</small>
+                </button>
+                <div class="slot-body">
+                    {% if templates is empty %}
+                        <div class="slot-empty">No units available.</div>
+                    {% else %}
+                        <ul>
+                            {% for template in templates %}
+                                <li>
+                                    <div>
+                                        <strong>{{ template.name }}</strong>
+                                        <span class="meta">({{ template.experience }}, {{ template.minSize }}-{{ template.maxSize }} models)</span>
+                                    </div>
+                                    <p>{{ template.description }}</p>
+                                    <div class="slot-actions">
+                                        <span class="cost">{{ template.baseCost }} pts</span>
+                                        <a class="bs-btn w-auto" href="{{ path('app_unit_template_form', {id: template.id}) }}">Configure</a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard | BattleScribe{% endblock %}
+
+{% block body %}
+    <div class="bs-card text-start mb-4">
+        <h1 class="mb-2">Welcome, {{ app.user.email }}</h1>
+        <p class="mb-0">Pick a faction to start building your roster. Each tile leads to its dedicated divisions.</p>
+    </div>
+
+    <div class="faction-grid">
+        {% for faction in factions %}
+            {% set big = faction.name|length > 3 ? faction.name|slice(0, 2)|upper : faction.name|upper %}
+            <a href="{{ path('app_faction_divisions', {id: faction.id}) }}" class="bs-card faction-card text-center">
+                <span class="faction-code">{{ big }}</span>
+                <span class="faction-subcode">{{ faction.name|upper }}</span>
+                <span class="faction-dot"></span>
+                <p class="faction-description mb-0">{{ faction.description|default('') }}</p>
+            </a>
+        {% else %}
+            <div class="bs-card text-center">
+                No factions available. Run migrations to seed them.
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

@@ -36,7 +36,9 @@ class Faction
     #[Groups(['faction:read', 'faction:read:full'])]
     private ?string $description = null;
 
-
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['faction:read', 'faction:read:full'])]
+    private ?string $icon = null;
 
     #[ORM\OneToMany(mappedBy: 'faction', targetEntity: Division::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['faction:read:full'])]

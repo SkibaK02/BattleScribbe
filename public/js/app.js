@@ -1,0 +1,70 @@
+(function ($) {
+    function initSlotToggles() {
+        $('[data-slot-toggle]').on('click', function () {
+            const $card = $(this).closest('[data-slot-card]');
+            const $state = $(this).find('.state');
+            $card.toggleClass('open');
+            if ($state.length) {
+                $state.text($card.hasClass('open') ? '-' : '+');
+            }
+        });
+    }
+
+    function initUnitForm() {
+        const $root = $('[data-unit-form]');
+        if (!$root.length) {
+            return;
+        }
+
+        const maxSize = Number($root.data('unitMaxSize')) || 1;
+        const $unit = $root.find('[data-points-unit]');
+        const $total = $root.find('[data-points-total]');
+        const $baseRadios = $root.find('[data-base-cost]');
+        const $inputs = $root.find('#unit-options').find('input, select');
+
+        function updatePoints() {
+            let total = 0;
+            $baseRadios.each(function () {
+                if ($(this).is(':checked')) {
+                    total += Number($(this).val()) || 0;
+                }
+            });
+
+            $inputs.each(function () {
+                const $input = $(this);
+                if ($input.attr('type') === 'number') {
+                    const per = Number($input.data('costPer') || 0);
+                    total += per * Number($input.val() || 0);
+                } else if ($input.attr('type') === 'checkbox') {
+                    if ($input.is(':checked')) {
+                        if ($input.data('perModel')) {
+                            total += Number($input.data('cost') || 0) * Number($input.data('maxPerModel') || 0);
+                        } else {
+                            total += Number($input.data('cost') || 0);
+                        }
+                    }
+                } else if ($input.is('select')) {
+                    const $selected = $input.find(':selected');
+                    total += Number($selected.data('cost') || 0);
+                    const perModel = Number($selected.data('costPer') || 0);
+                    if (perModel > 0) {
+                        total += perModel * maxSize;
+                    }
+                }
+            });
+
+            $unit.text(total);
+            $total.text(total);
+        }
+
+        $baseRadios.on('change', updatePoints);
+        $inputs.on('input change', updatePoints);
+        updatePoints();
+    }
+
+    $(function () {
+        initSlotToggles();
+        initUnitForm();
+    });
+})(jQuery);
+

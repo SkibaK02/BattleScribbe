@@ -17,16 +17,33 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['roster:read', 'roster:read:full']]),
-        new GetCollection(normalizationContext: ['groups' => ['roster:read']]),
-        new Post(denormalizationContext: ['groups' => ['roster:write']]),
-        new Put(denormalizationContext: ['groups' => ['roster:write']]),
-        new Delete()
+        new Get(
+            normalizationContext: ['groups' => ['roster:read', 'roster:read:full']],
+            security: "object.getOwner() === user"
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['roster:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Post(
+            denormalizationContext: ['groups' => ['roster:write']],
+            security: "is_granted('ROLE_USER')",
+            processor: App\State\RosterStateProcessor::class
+        ),
+        new Put(
+            denormalizationContext: ['groups' => ['roster:write']],
+            security: "object.getOwner() === user",
+            processor: App\State\RosterStateProcessor::class
+        ),
+        new Delete(
+            security: "object.getOwner() === user"
+        )
     ],
     order: ['id' => 'DESC'],
     paginationEnabled: true
 )]
 #[ORM\Entity(repositoryClass: RosterRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Roster
 {
     #[ORM\Id]
@@ -61,6 +78,10 @@ class Roster
     #[ORM\OneToMany(mappedBy: 'roster', targetEntity: RosterUnit::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['roster:read:full'])]
     private Collection $units;
+
+    #[ORM\ManyToOne(inversedBy: 'rosters')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
 
     #[ORM\Column]
     #[Groups(['roster:read'])]
@@ -156,6 +177,23 @@ class Roster
         }
 
         return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
+        return $this;
+    }
+
+    #[Groups(['roster:read'])]
+    public function getOwnerId(): ?int
+    {
+        return $this->owner?->getId();
     }
 
     public function getCreatedAt(): \DateTimeImmutable

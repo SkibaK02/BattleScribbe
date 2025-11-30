@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ template.name }} | Configuration{% endblock %}
+
+{% block body %}
+    <div id="unit-form-root" data-unit-form data-unit-max-size="{{ template.maxSize ?? template.minSize ?? 1 }}">
+        <div class="bs-card mb-4">
+            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
+                <div>
+                    <h1 class="mb-1">{{ template.name }}</h1>
+                    <p class="text-muted mb-0">Armies of {{ template.division.faction.name }} · {{ template.division.name }}</p>
+                </div>
+                <div class="points-panel">
+                    <div class="points-box">
+                        <span class="points-label">This Unit</span>
+                        <span class="points-value" data-points-unit>0</span>
+                    </div>
+                    <div class="points-box">
+                        <span class="points-label">Other Units</span>
+                        <span class="points-value" data-points-other>0</span>
+                    </div>
+                    <div class="points-box">
+                        <span class="points-label">Points Total</span>
+                        <span class="points-value" data-points-total>0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if config is null %}
+            <div class="bs-card">
+                <p>The configurator for this unit is not ready yet. Please check back later.</p>
+                <a class="bs-btn w-auto mt-3" href="{{ path('app_division_slots', {id: template.division.id}) }}">← Back to slots</a>
+            </div>
+        {% else %}
+            <div class="unit-layout">
+                <section>
+                    <h2>Base cost</h2>
+                    <div class="base-costs">
+                        {% for cost in config.experience_costs %}
+                            <label class="radio-pill">
+                                <input type="radio" name="experience" value="{{ cost.cost }}" data-base-cost required {{ loop.first ? 'checked' : '' }}>
+                                <span>{{ cost.label }} ({{ cost.cost }} pts)</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+
+                    <h2 class="mt-4">Composition & Weapons</h2>
+                    <ul class="list-unstyled">
+                        <li><strong>Composition:</strong> {{ config.composition }}</li>
+                        <li><strong>Weapons:</strong> {{ config.weapons|join(', ') }}</li>
+                        <li><strong>Special Rules:</strong> {{ config.special_rules|join(', ') }}</li>
+                    </ul>
+                </section>
+
+                    <section>
+                        <h2>Options</h2>
+                        <form id="unit-options" class="bs-form">
+                            {% for option in config.options %}
+                                <div class="option">
+                                    <label>{{ option.label }}</label>
+                                    {% if option.type == 'number' %}
+                                        <input type="number"
+                                               name="{{ option.name }}"
+                                               min="0"
+                                               max="{{ option.max|default(0) }}"
+                                               value="0"
+                                               data-cost-per="{{ option.cost_per|default(0) }}">
+                                        <small class="text-muted">max {{ option.max|default(0) }}</small>
+                                    {% elseif option.type == 'checkbox' %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                   id="{{ option.name }}"
+                                                   name="{{ option.name }}"
+                                                   data-cost="{{ option.cost|default(0) }}"
+                                                   {% if option.per_model|default(false) %}data-per-model="true" data-max-per-model="{{ option.max_per_model|default(0) }}"{% endif %}>
+                                            <label class="form-check-label text-muted small" for="{{ option.name }}">Enable option</label>
+                                        </div>
+                                    {% elseif option.type == 'select' %}
+                                        <select name="{{ option.name }}">
+                                            <option value="0" data-cost="0">None</option>
+                                            {% for choice in option.options|default([]) %}
+                                                <option value="{{ loop.index }}" data-cost="{{ choice.cost|default(0) }}" data-cost-per="{{ choice.cost_per_model|default(0) }}">
+                                                    {{ choice.label }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            <div class="option-buttons">
+                                <button type="button" class="bs-btn w-auto" id="save-unit">Save</button>
+                                <a class="bs-btn bs-btn-alt w-auto" href="{{ path('app_division_slots', {id: template.division.id}) }}">Save & View</a>
+                                <a class="bs-btn bs-btn-danger w-auto" href="{{ path('app_division_slots', {id: template.division.id}) }}">Reset</a>
+                            </div>
+                        </form>
+                    </section>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+

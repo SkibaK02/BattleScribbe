@@ -35,7 +35,7 @@ class RosterUnitWeapon
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['roster_unit_weapon:read', 'roster_unit_weapon:write'])]
-    private RosterUnit $rosterUnit;
+    private ?RosterUnit $rosterUnit = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,12 +62,12 @@ class RosterUnitWeapon
         return $this->id;
     }
 
-    public function getRosterUnit(): RosterUnit
+    public function getRosterUnit(): ?RosterUnit
     {
         return $this->rosterUnit;
     }
 
-    public function setRosterUnit(RosterUnit $rosterUnit): self
+    public function setRosterUnit(?RosterUnit $rosterUnit): self
     {
         $this->rosterUnit = $rosterUnit;
         return $this;

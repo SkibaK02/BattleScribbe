@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ faction.name }} | Divisions{% endblock %}
+
+{% block body %}
+    <div class="bs-card text-center mb-4">
+        <h1 class="mb-2">Choose a division</h1>
+        <p class="mb-0">Selected faction: <strong>{{ faction.name }}</strong></p>
+        <p class="text-muted">{{ faction.description }}</p>
+        <a class="bs-btn w-auto mt-3" href="{{ path('app_dashboard') }}">← Change faction</a>
+    </div>
+
+    <div class="faction-grid">
+        {% for division in divisions %}
+            <div class="bs-card d-flex flex-column">
+                <h2 class="fs-4">{{ division.name }}</h2>
+                <p class="text-muted flex-grow-1">{{ division.description }}</p>
+                <a class="bs-btn w-100 mt-3" href="{{ path('app_division_slots', {id: division.id}) }}">
+                    Select division
+                </a>
+            </div>
+        {% else %}
+            <div class="bs-card text-center">
+                No divisions available for this faction.
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+

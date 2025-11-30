@@ -42,7 +42,6 @@ class UnitTemplate
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['Infantry', 'Vehicle', 'Artillery', 'Special'])]
     #[Groups(['unit_template:read', 'unit_template:write', 'division:read:full', 'roster_unit:read'])]
     private string $type;
 
@@ -74,7 +73,7 @@ class UnitTemplate
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['unit_template:read', 'unit_template:write'])]
-    private Division $division;
+    private ?Division $division = null;
 
     #[ORM\ManyToMany(targetEntity: Weapon::class)]
     #[ORM\JoinTable(name: 'unit_template_weapon')]
@@ -179,12 +178,12 @@ class UnitTemplate
         return $this;
     }
 
-    public function getDivision(): Division
+    public function getDivision(): ?Division
     {
         return $this->division;
     }
 
-    public function setDivision(Division $division): self
+    public function setDivision(?Division $division): self
     {
         $this->division = $division;
         return $this;

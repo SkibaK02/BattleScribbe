@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20251130120539 extends AbstractMigration
+final class Version20251130123728 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,7 +21,7 @@ final class Version20251130120539 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE division (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, faction_id INT NOT NULL, INDEX IDX_101747144448F8DA (faction_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE faction (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, created_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE faction (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, icon VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE roster (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, points_limit INT NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, faction_id INT NOT NULL, division_id INT NOT NULL, INDEX IDX_60B9ADF94448F8DA (faction_id), INDEX IDX_60B9ADF941859289 (division_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE roster_unit (id INT AUTO_INCREMENT NOT NULL, custom_cost INT NOT NULL, quantity INT NOT NULL, created_at DATETIME NOT NULL, unit_template_id INT NOT NULL, roster_id INT NOT NULL, INDEX IDX_D4C921849EBD659E (unit_template_id), INDEX IDX_D4C9218475404483 (roster_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE roster_unit_weapon (id INT AUTO_INCREMENT NOT NULL, quantity INT NOT NULL, created_at DATETIME NOT NULL, roster_unit_id INT NOT NULL, weapon_id INT NOT NULL, INDEX IDX_6D9AFC73EE5A194F (roster_unit_id), INDEX IDX_6D9AFC7395B82273 (weapon_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');

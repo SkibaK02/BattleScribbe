@@ -43,7 +43,7 @@ class RosterUnit
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['roster_unit:read', 'roster_unit:write'])]
-    private Roster $roster;
+    private ?Roster $roster = null;
 
     #[ORM\Column]
     #[Assert\PositiveOrZero]
@@ -85,12 +85,12 @@ class RosterUnit
         return $this;
     }
 
-    public function getRoster(): Roster
+    public function getRoster(): ?Roster
     {
         return $this->roster;
     }
 
-    public function setRoster(Roster $roster): self
+    public function setRoster(?Roster $roster): self
     {
         $this->roster = $roster;
         return $this;
@@ -156,8 +156,8 @@ class RosterUnit
     public function getTotalCost(): int
     {
         $weaponsCost = 0;
-        foreach ($this->weapons as $weapon) {
-            $weaponsCost += $weapon->getWeapon()->getCost() ?? 0;
+        foreach ($this->weapons as $rosterUnitWeapon) {
+            $weaponsCost += $rosterUnitWeapon->getTotalCost();
         }
 
         $unitCost = $this->unitTemplate->getBaseCost() + $this->customCost + $weaponsCost;

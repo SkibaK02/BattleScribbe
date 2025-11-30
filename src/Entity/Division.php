@@ -48,7 +48,7 @@ class Division
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['division:read', 'division:write', 'division:read:full'])]
-    private Faction $faction;
+    private ?Faction $faction = null;
 
     #[ORM\OneToMany(mappedBy: 'division', targetEntity: UnitTemplate::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['division:read:full'])]
@@ -91,12 +91,12 @@ class Division
         return $this;
     }
 
-    public function getFaction(): Faction
+    public function getFaction(): ?Faction
     {
         return $this->faction;
     }
 
-    public function setFaction(Faction $faction): self
+    public function setFaction(?Faction $faction): self
     {
         $this->faction = $faction;
         return $this;
