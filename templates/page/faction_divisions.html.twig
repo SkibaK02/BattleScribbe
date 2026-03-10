@@ -3,27 +3,44 @@
 {% block title %}{{ faction.name }} | Divisions{% endblock %}
 
 {% block body %}
-    <div class="bs-card text-center mb-4">
-        <h1 class="mb-2">Choose a division</h1>
-        <p class="mb-0">Selected faction: <strong>{{ faction.name }}</strong></p>
-        <p class="text-muted">{{ faction.description }}</p>
-        <a class="bs-btn w-auto mt-3" href="{{ path('app_dashboard') }}">← Change faction</a>
+<section class="selection-hero">
+    <div>
+        <p class="selection-kicker">Army</p>
+        <h1 class="selection-title">{{ faction.name }}</h1>
+        <p class="selection-subtitle">{{ faction.description }}</p>
+        <div class="builder-hero-stats builder-stats-inline" style="margin-top:8px;">
+            <div class="builder-stat">
+                <span class="builder-stat__label">Total points (all divisions)</span>
+                <span class="builder-stat__value">{{ factionTotal|default(0) }}</span>
+            </div>
+        </div>
     </div>
+    <div class="selection-actions">
+        <a class="selection-btn ghost" href="{{ path('app_dashboard') }}">← Change faction</a>
+        <a class="selection-btn ghost" href="{{ path('app_faction_armies', {id: faction.id}) }}">← Back to armies</a>
+        <a class="selection-btn" href="{{ path('app_faction_export_pdf', {id: faction.id}) }}">Export army PDF</a>
+    </div>
+</section>
 
-    <div class="faction-grid">
-        {% for division in divisions %}
-            <div class="bs-card d-flex flex-column">
-                <h2 class="fs-4">{{ division.name }}</h2>
-                <p class="text-muted flex-grow-1">{{ division.description }}</p>
-                <a class="bs-btn w-100 mt-3" href="{{ path('app_division_slots', {id: division.id}) }}">
-                    Select division
-                </a>
+<section class="selection-grid">
+    {% for division in divisions %}
+        <a class="selection-card" href="{{ path('app_division_slots', {id: division.id}) }}">
+            <div class="selection-card__meta">
+                <span class="selection-pill">Division</span>
+                {% set divPts = divisionTotals[division.id]|default(0) %}
+                {% if divPts > 0 %}
+                    <span class="selection-pill ghost">Total {{ divPts }} pts</span>
+                {% endif %}
             </div>
-        {% else %}
-            <div class="bs-card text-center">
-                No divisions available for this faction.
-            </div>
-        {% endfor %}
-    </div>
+            <h2 class="selection-card__title">{{ division.name }}</h2>
+            <p class="selection-card__desc">{{ division.description|default('No description provided.') }}</p>
+            <span class="selection-link">Select division →</span>
+        </a>
+    {% else %}
+        <div class="selection-empty">
+            No divisions available for this faction.
+        </div>
+    {% endfor %}
+</section>
 {% endblock %}
 

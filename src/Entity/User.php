@@ -26,6 +26,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email]
     private ?string $email = null;
 
+    /**
+     * @var array<string>
+     */
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -35,13 +38,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    /**
+     * @var Collection<int, Roster>
+     */
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Roster::class, orphanRemoval: true)]
     private Collection $rosters;
+
+    /**
+     * @var Collection<int, ArmyInstance>
+     */
+    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ArmyInstance::class, orphanRemoval: true)]
+    private Collection $armyInstances;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->rosters = new ArrayCollection();
+        $this->armyInstances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -60,9 +73,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    /**
+     * @return Collection<int, ArmyInstance>
+     */
+    public function getArmyInstances(): Collection
+    {
+        return $this->armyInstances;
+    }
+
+    public function addArmyInstance(ArmyInstance $armyInstance): self
+    {
+        if (!$this->armyInstances->contains($armyInstance)) {
+            $this->armyInstances->add($armyInstance);
+            $armyInstance->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeArmyInstance(ArmyInstance $armyInstance): self
+    {
+        if ($this->armyInstances->removeElement($armyInstance)) {
+            if ($armyInstance->getOwner() === $this) {
+                $armyInstance->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email ?? '';
     }
 
     /**
@@ -74,7 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string[]
+     * @return array<string>
      */
     public function getRoles(): array
     {
@@ -84,6 +126,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_values(array_unique($roles));
     }
 
+    /**
+     * @param array<string> $roles
+     */
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;

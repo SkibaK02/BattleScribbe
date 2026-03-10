@@ -1,89 +1,66 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ division.name }} | Slots{% endblock %}
+{% block title %}{{ division.name }} | Rosters{% endblock %}
 
 {% block body %}
-    <div class="bs-card mb-4">
-        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
-            <div>
-                <h1 class="mb-1">{{ division.name }}</h1>
-                <p class="text-muted mb-0">Pick the slots available for this division.</p>
-            </div>
-            <a class="bs-btn w-auto" href="{{ path('app_faction_divisions', {id: division.faction.id}) }}">← Change division</a>
-        </div>
-        <div class="points-panel">
-            <div class="points-box">
-                <span class="points-label">This Unit</span>
-                <span class="points-value" data-points-unit>0</span>
-            </div>
-            <div class="points-box">
-                <span class="points-label">Other Units</span>
-                <span class="points-value">{{ otherPoints }}</span>
-            </div>
-            <div class="points-box">
-                <span class="points-label">Points Total</span>
-                <span class="points-value">{{ otherPoints }}</span>
-            </div>
-        </div>
+<section class="selection-hero">
+    <div>
+        <p class="selection-kicker">Division</p>
+        <h1 class="selection-title">{{ division.name }}</h1>
+        <p class="selection-subtitle">{{ division.description }}</p>
     </div>
+    <div class="selection-actions">
+        <a class="selection-btn ghost" href="{{ path('app_faction_rosters', {id: division.faction.id}) }}">← Back to army rosters</a>
+    </div>
+</section>
 
-    <div class="slot-grid">
-        {% for slotName, templates in slots %}
-            <div class="slot-card open" data-slot-card>
-                <button type="button" class="slot-header" data-slot-toggle>
-                    <span>[<span class="state">-</span>] {{ slotName }}</span>
-                    <small>toggle</small>
-                </button>
-                <div class="slot-body">
-                    {% if templates is empty %}
-                        <div class="slot-empty">No units available.</div>
-                    {% else %}
-                        <ul>
-                            {% for template in templates %}
-                                {% set templateBuilds = builds[template.id]|default([]) %}
-                                <li>
-                                    <div>
-                                        <strong>{{ template.name }}</strong>
-                                        <span class="meta">({{ template.experience }}, {{ template.minSize }}-{{ template.maxSize }} models)</span>
-                                    </div>
-                                    <p>{{ template.description }}</p>
-                                    {% if templateBuilds %}
-                                        <div class="slot-builds">
-                                            <p class="text-muted mb-1 small">Added units:</p>
-                                            <ul>
-                                                {% for build in templateBuilds %}
-                                                    <li class="slot-build-line">
-                                                        <span>{{ build.experience }} — {{ build.totalCost }} pts</span>
-                                                        <span class="slot-build-actions">
-                                                            <a class="bs-btn bs-btn-alt w-auto"
-                                                               href="{{ path('app_unit_template_form', {id: template.id, build: build.id}) }}">Edit</a>
-                                                            <form method="post"
-                                                                  action="{{ path('app_unit_build_delete', {id: build.id}) }}"
-                                                                  onsubmit="return confirm('Remove this unit?');">
-                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete_unit_build_' ~ build.id) }}">
-                                                                <button type="submit" class="bs-btn bs-btn-danger w-auto">Delete</button>
-                                                            </form>
-                                                        </span>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    {% else %}
-                                        <p class="slot-empty mb-2">No units added yet.</p>
-                                    {% endif %}
-                                    <div class="slot-actions">
-                                        <span class="cost">{{ template.baseCost }} pts</span>
-                                        <a class="bs-btn w-auto" href="{{ path('app_unit_template_form', {id: template.id}) }}">
-                                            {{ templateBuilds ? 'Add another' : 'Add' }}
-                                        </a>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
+<section class="builder-grid">
+    {% if rosterDivisions %}
+        {% for rd in rosterDivisions %}
+            <div class="builder-card">
+                <div class="builder-unit__top">
+                    <div>
+                        <p class="builder-pill">Roster</p>
+                        <h2 class="builder-card__title">{{ rd.name }}</h2>
+                        <p class="builder-meta">Created {{ rd.createdAt|date('Y-m-d H:i') }}</p>
+                    </div>
+                </div>
+                <p class="builder-desc">
+                    Open to add units to this division instance.
+                    {% set pts = rosterTotals[rd.id]|default(0) %}
+                    <strong>{{ pts }} pts</strong>
+                </p>
+                <div class="builder-actions">
+                    <a class="selection-btn" href="{{ path('app_roster_division', {id: rd.id}) }}">Open</a>
+                    {# @TODO: Add remove platoon option #}
+                    <a class="selection-btn" href="{{ path('app_roster_division', {id: rd.id}) }}">Remove</a>
                 </div>
             </div>
         {% endfor %}
+    {% else %}
+        <div class="builder-card">
+            <p class="builder-empty">No rosters yet for this division.</p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="builder-actions" style="margin-top: 1rem; display:flex; flex-direction:column; gap:0.75rem;">
+    <form method="post" action="{{ path('app_roster_division_create', {id: division.id}) }}" class="auth-form" style="width: 100%; max-width: 100%; display:flex; flex-direction:column; gap:6px; align-items:flex-start;">
+        <label class="builder-meta" for="rd-name">New roster name (optional)</label>
+        <input id="rd-name" name="name" class="auth-input" placeholder="{{ division.name }} #{{ rosterDivisions|length + 1 }}" style="width:min(100%, 355px);">
+        <button type="submit" class="selection-btn" style="width:auto;">Create roster</button>
+    </form>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <a class="selection-btn ghost" href="{{ path('app_faction_divisions', {id: division.faction.id}) }}">← Back to platoons</a>
+        <a class="selection-btn" href="{{ path('app_division_export_pdf', {id: division.id}) }}">Export PDF</a>
     </div>
+</section>
+
+<section class="builder-hero-stats builder-stats-inline" style="margin-top: 0.5rem;">
+    <div class="builder-stat">
+        <span class="builder-stat__label">Total points (all rosters)</span>
+        <span class="builder-stat__value">{{ divisionTotal|default(0) }}</span>
+    </div>
+</section>
 {% endblock %}
 

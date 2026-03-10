@@ -75,11 +75,17 @@ class UnitTemplate
     #[Groups(['unit_template:read', 'unit_template:write'])]
     private ?Division $division = null;
 
+    /**
+     * @var Collection<int, Weapon>
+     */
     #[ORM\ManyToMany(targetEntity: Weapon::class)]
     #[ORM\JoinTable(name: 'unit_template_weapon')]
     #[Groups(['unit_template:read:full', 'unit_template:write'])]
     private Collection $weapons;
 
+    /**
+     * @var Collection<int, SpecialRule>
+     */
     #[ORM\ManyToMany(targetEntity: SpecialRule::class)]
     #[ORM\JoinTable(name: 'unit_template_special_rule')]
     #[Groups(['unit_template:read:full', 'unit_template:write'])]
@@ -189,6 +195,9 @@ class UnitTemplate
         return $this;
     }
 
+    /**
+     * @return Collection<int, Weapon>
+     */
     public function getWeapons(): Collection
     {
         return $this->weapons;
@@ -208,6 +217,9 @@ class UnitTemplate
         return $this;
     }
 
+    /**
+     * @return Collection<int, SpecialRule>
+     */
     public function getSpecialRules(): Collection
     {
         return $this->specialRules;

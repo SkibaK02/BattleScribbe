@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -114,6 +115,43 @@ class AuthController extends AbstractController
             'email' => $user->getEmail(),
             'roles' => $user->getRoles(),
         ]);
+    }
+
+    #[Route('/account', name: 'app_account', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function account(): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        return $this->render('account/account.html.twig', [
+            'user' => $user,
+        ]);
+    }
+
+    #[Route('/account/password', name: 'app_account_password', methods: ['POST'])]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    public function updatePassword(
+        Request $request,
+        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $entityManager
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $newPassword = (string) $request->request->get('password');
+
+        if (\strlen($newPassword) < 8) {
+            $this->addFlash('error', 'Password must have at least 8 characters.');
+            return $this->redirectToRoute('app_account');
+        }
+
+        $hashed = $passwordHasher->hashPassword($user, $newPassword);
+        $user->setPassword($hashed);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Password updated successfully.');
+        return $this->redirectToRoute('app_account');
     }
 
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]

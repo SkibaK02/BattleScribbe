@@ -40,6 +40,9 @@ class Faction
     #[Groups(['faction:read', 'faction:read:full'])]
     private ?string $icon = null;
 
+    /**
+     * @var Collection<int, Division>
+     */
     #[ORM\OneToMany(mappedBy: 'faction', targetEntity: Division::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['faction:read:full'])]
     private Collection $divisions;
@@ -92,6 +95,9 @@ class Faction
         return $this;
     }
 
+    /**
+     * @return Collection<int, Division>
+     */
     public function getDivisions(): Collection
     {
         return $this->divisions;

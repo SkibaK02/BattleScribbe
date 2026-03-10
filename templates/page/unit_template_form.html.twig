@@ -3,129 +3,200 @@
 {% block title %}{{ template.name }} | Configuration{% endblock %}
 
 {% block body %}
-    <div id="unit-form-root"
-         data-unit-form
-         data-unit-max-size="{{ template.maxSize ?? template.minSize ?? 1 }}"
-         data-other-points="{{ other_points|default(0) }}">
-        <div class="bs-card mb-4">
-            <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start gap-3">
-                <div>
-                    <h1 class="mb-1">{{ template.name }}</h1>
-                    <p class="text-muted mb-0">Armies of {{ template.division.faction.name }} · {{ template.division.name }}</p>
-                </div>
-                <div class="points-panel">
-                    <div class="points-box">
-                        <span class="points-label">This Unit</span>
-                        <span class="points-value" data-points-unit>0</span>
-                    </div>
-                    <div class="points-box">
-                        <span class="points-label">Other Units</span>
-                        <span class="points-value" data-points-other>0</span>
-                    </div>
-                    <div class="points-box">
-                        <span class="points-label">Points Total</span>
-                        <span class="points-value" data-points-total>0</span>
-                    </div>
-                </div>
-            </div>
+<div class="builder-shell"
+     data-unit-form
+     data-unit-max-size="{{ template.maxSize ?? template.minSize ?? 1 }}"
+     data-other-points="{{ other_points|default(0) }}">
+
+    <section class="builder-hero">
+        <div>
+            <p class="builder-kicker">{{ template.division.faction.name }} · {{ template.division.name }}</p>
+            <h1 class="builder-title">{{ template.name }}</h1>
+            <p class="builder-subtitle">{{ hero_description|default(template.description) }}</p>
         </div>
+            <div class="builder-hero-stats">
+                <div class="builder-stat">
+                    <span class="builder-stat__label">This unit</span>
+                    <span class="builder-stat__value" data-points-unit>{{ unit_preview_cost ?? unit_base_cost|default(0) }}</span>
+                </div>
+                <div class="builder-stat">
+                    <span class="builder-stat__label">Other units</span>
+                    <span class="builder-stat__value" data-points-other>{{ other_points|default(0) }}</span>
+                </div>
+                <div class="builder-stat">
+                    <span class="builder-stat__label">Total</span>
+                    <span class="builder-stat__value" data-points-total>{{ (unit_preview_cost ?? unit_base_cost|default(0)) + other_points|default(0) }}</span>
+                </div>
+            </div>
+    </section>
 
-        {% if errors is defined and errors %}
-            <div class="alert flash-error mb-4">
-                <ul class="mb-0">
-                    {% for error in errors %}
-                        <li>{{ error }}</li>
+    {% if errors is defined and errors %}
+        <div class="auth-alert error">
+            <ul class="mb-0">
+                {% for error in errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if config is null %}
+        <div class="builder-card">
+            <p>The configurator for this unit is not ready yet. Please check back later.</p>
+            <a class="selection-btn ghost" href="{{ path('app_division_slots', {id: template.division.id}) }}">← Back to slots</a>
+        </div>
+    {% else %}
+        {# Determine which experience is currently selected (default: first) #}
+        {% set current_experience = form_data.experience is defined
+            ? form_data.experience
+            : (config.experience_costs|length ? config.experience_costs[0].key : null) %}
+
+        <form class="builder-form" method="post" id="unit-build-form">
+            <input type="hidden" name="_token" value="{{ csrf_token('unit_template_' ~ template.id) }}">
+            {% if roster_division %}
+                <input type="hidden" name="roster_division_id" value="{{ roster_division.id }}">
+            {% endif %}
+            {% if build_id %}
+                <input type="hidden" name="build_id" value="{{ build_id }}">
+            {% endif %}
+
+            <section class="builder-card">
+                <h2>Base cost</h2>
+                <div class="builder-options">
+                    {% for cost in config.experience_costs %}
+                        <label class="builder-radio">
+                            <input type="radio"
+                                   name="experience"
+                                   value="{{ cost.key }}"
+                                   data-base-cost="{{ cost.cost }}"
+                                   required
+                                   {{ (form_data.experience is defined and form_data.experience == cost.key) or (form_data.experience is not defined and loop.first) ? 'checked' : '' }}>
+                            <span>{{ cost.label }} ({{ cost.cost }} pts)</span>
+                        </label>
                     {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+                </div>
 
-        {% if config is null %}
-            <div class="bs-card">
-                <p>The configurator for this unit is not ready yet. Please check back later.</p>
-                <a class="bs-btn w-auto mt-3" href="{{ path('app_division_slots', {id: template.division.id}) }}">← Back to slots</a>
-            </div>
-        {% else %}
-            <form class="unit-layout" method="post" id="unit-build-form">
-                <input type="hidden" name="_token" value="{{ csrf_token('unit_template_' ~ template.id) }}">
-                {% if build_id %}
-                    <input type="hidden" name="build_id" value="{{ build_id }}">
-                {% endif %}
-                <section>
-                    <h2>Base cost</h2>
-                    <div class="base-costs">
-                        {% for cost in config.experience_costs %}
-                            <label class="radio-pill">
-                                <input type="radio"
-                                       name="experience"
-                                       value="{{ cost.key }}"
-                                       data-base-cost="{{ cost.cost }}"
-                                       required
-                                       {{ (form_data.experience is defined and form_data.experience == cost.key) or (form_data.experience is not defined and loop.first) ? 'checked' : '' }}>
-                                <span>{{ cost.label }} ({{ cost.cost }} pts)</span>
+                <div class="builder-info">
+                    <p><strong>Composition:</strong> {{ config.composition }}</p>
+                    <p><strong>Weapons:</strong> {{ config.weapons|join(', ') }}</p>
+                    {% if config.special_rules is not empty %}
+                        <p><strong>Special Rules:</strong> {{ config.special_rules|join(', ') }}</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="builder-card">
+                <h2>Options</h2>
+                <div id="unit-options" class="builder-options-grid">
+                    {% for option in config.options %}
+                        {# Hide options that don't match the initially selected experience #}
+                        {% set option_hidden = option.restricted_to is defined and option.restricted_to and option.restricted_to != current_experience %}
+                        <div class="builder-option"
+                             data-option-block
+                             data-requires-experience-block="{{ option.restricted_to|default('') }}"
+                             style="{{ option_hidden ? 'display:none;' : '' }}">
+                        <label class="builder-label">{{ option.label }}</label>
+                        {% if option.type == 'number' %}
+                                <input class="builder-input"
+                                       type="number"
+                                       name="{{ option.name }}"
+                                       min="0"
+                                       max="{{ option.max|default(0) }}"
+                                       value="{{ form_data[option.name]|default(0) }}"
+                                       data-cost-per="{{ option.cost_per|default(0) }}"
+                                       data-requires-experience="{{ option.restricted_to|default('') }}">
+                                <small class="builder-meta">max {{ option.max|default(0) }}</small>
+                        {% elseif option.type == 'checkbox' %}
+                            <label class="builder-checkbox">
+                                <input type="checkbox"
+                                       name="{{ option.name }}"
+                                       data-cost="{{ option.cost|default(0) }}"
+                                       {% if option.per_model|default(false) %}data-per-model="true" data-max-per-model="{{ option.max_per_model|default(0) }}"{% endif %}
+                                       {% if form_data[option.name]|default(false) %}checked{% endif %}>
+                                <span>{{ option.label }}</span>
                             </label>
-                        {% endfor %}
-                    </div>
-
-                    <h2 class="mt-4">Composition & Weapons</h2>
-                    <ul class="list-unstyled">
-                        <li><strong>Composition:</strong> {{ config.composition }}</li>
-                        <li><strong>Weapons:</strong> {{ config.weapons|join(', ') }}</li>
-                        <li><strong>Special Rules:</strong> {{ config.special_rules|join(', ') }}</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h2>Options</h2>
-                    <div id="unit-options" class="bs-form">
-                        {% for option in config.options %}
-                            <div class="option" data-option-block>
-                                <label>{{ option.label }}</label>
-                                {% if option.type == 'number' %}
-                                    <input type="number"
-                                           name="{{ option.name }}"
-                                           min="0"
-                                           max="{{ option.max|default(0) }}"
-                                           value="{{ form_data[option.name]|default(0) }}"
-                                           data-cost-per="{{ option.cost_per|default(0) }}"
-                                           data-requires-experience="{{ option.restricted_to|default('') }}">
-                                    <small class="text-muted">max {{ option.max|default(0) }}</small>
-                                {% elseif option.type == 'checkbox' %}
-                                    <div class="form-check">
-                                        <input class="form-check-input"
-                                               type="checkbox"
-                                               id="{{ option.name }}"
-                                               name="{{ option.name }}"
-                                               data-cost="{{ option.cost|default(0) }}"
-                                               {% if option.per_model|default(false) %}data-per-model="true" data-max-per-model="{{ option.max_per_model|default(0) }}"{% endif %}
-                                               {% if form_data[option.name]|default(false) %}checked{% endif %}>
-                                        <label class="form-check-label text-muted small" for="{{ option.name }}">Enable option</label>
-                                    </div>
-                                {% elseif option.type == 'select' %}
-                                    <select name="{{ option.name }}">
-                                        <option value="none" data-cost="0">None</option>
-                                        {% for choice in option.options|default([]) %}
-                                            <option value="{{ choice.value }}"
-                                                    data-cost="{{ choice.cost|default(0) }}"
-                                                    data-cost-per="{{ choice.cost_per_model|default(0) }}"
-                                                    {% if form_data[option.name]|default('none') == choice.value %}selected{% endif %}>
-                                                {{ choice.label }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-
-                        <div class="option-buttons">
-                            <button type="submit" class="bs-btn w-auto" id="save-unit">Save</button>
-                            <a class="bs-btn bs-btn-alt w-auto" href="{{ path('app_division_slots', {id: template.division.id}) }}">Back to slots</a>
-                            <a class="bs-btn bs-btn-danger w-auto" href="{{ path('app_unit_template_form', {id: template.id}) }}">Reset</a>
+                        {% elseif option.type == 'select' %}
+                            <select class="builder-input" name="{{ option.name }}">
+                                <option value="none" data-cost="0">None</option>
+                                {% for choice in option.options|default([]) %}
+                                    <option value="{{ choice.value }}"
+                                            data-cost="{{ choice.cost|default(0) }}"
+                                            data-cost-per="{{ choice.cost_per_model|default(0) }}"
+                                            {% if form_data[option.name]|default('none') == choice.value %}selected{% endif %}>
+                                        {{ choice.label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
                         </div>
-                    </div>
-                </section>
-            </form>
-        {% endif %}
-    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="builder-actions">
+                    <button type="submit" class="selection-btn" id="save-unit">Save</button>
+                    {% if roster_division %}
+                        <a class="selection-btn ghost" href="{{ path('app_roster_division', {id: roster_division.id}) }}">Back to roster</a>
+                    {% else %}
+                        <a class="selection-btn ghost" href="{{ path('app_division_slots', {id: template.division.id}) }}">Back to slots</a>
+                    {% endif %}
+                    <a class="selection-btn ghost danger" href="{{ path('app_unit_template_form', {id: template.id, roster_division: roster_division ? roster_division.id : null}) }}">Reset</a>
+                </div>
+            </section>
+        </form>
+
+        <script>
+            (function () {
+                const root = document.querySelector('[data-unit-form]');
+                if (!root) return;
+
+                const baseRadios = Array.from(root.querySelectorAll('[data-base-cost]'));
+                const optionBlocks = Array.from(root.querySelectorAll('[data-requires-experience-block]'));
+                const restrictedInputs = Array.from(root.querySelectorAll('[data-requires-experience]'));
+
+                function resetBlock(block) {
+                    block.querySelectorAll('input, select').forEach((el) => {
+                        if (el.type === 'number') {
+                            el.value = 0;
+                        } else if (el.type === 'checkbox') {
+                            el.checked = false;
+                        } else if (el.tagName === 'SELECT') {
+                            el.selectedIndex = 0;
+                        }
+                    });
+                }
+
+                function updateVisibility() {
+                    const current = (baseRadios.find(r => r.checked) || {}).value || '';
+
+                    optionBlocks.forEach((block) => {
+                        const required = block.dataset.requiresExperienceBlock || '';
+                        if (!required || required === current) {
+                            block.style.display = '';
+                        } else {
+                            resetBlock(block);
+                            block.style.display = 'none';
+                        }
+                    });
+
+                    restrictedInputs.forEach((input) => {
+                        const required = input.dataset.requiresExperience || '';
+                        const block = input.closest('[data-option-block]');
+                        if (!block) return;
+
+                        if (!required || required === current) {
+                            block.style.display = '';
+                        } else {
+                            resetBlock(block);
+                            block.style.display = 'none';
+                        }
+                    });
+                }
+
+                baseRadios.forEach((r) => r.addEventListener('change', updateVisibility));
+                updateVisibility();
+            })();
+        </script>
+    {% endif %}
+</div>
 {% endblock %}
 

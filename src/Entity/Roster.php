@@ -7,13 +7,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\State\RosterStateProcessor;
 
 #[ApiResource(
     operations: [
@@ -28,12 +29,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Post(
             denormalizationContext: ['groups' => ['roster:write']],
             security: "is_granted('ROLE_USER')",
-            processor: App\State\RosterStateProcessor::class
+            processor: RosterStateProcessor::class
         ),
         new Put(
             denormalizationContext: ['groups' => ['roster:write']],
             security: "object.getOwner() === user",
-            processor: App\State\RosterStateProcessor::class
+            processor: RosterStateProcessor::class
         ),
         new Delete(
             security: "object.getOwner() === user"
@@ -75,6 +76,9 @@ class Roster
     #[Groups(['roster:read', 'roster:write', 'roster:read:full'])]
     private Division $division;
 
+    /**
+     * @var Collection<int, RosterUnit>
+     */
     #[ORM\OneToMany(mappedBy: 'roster', targetEntity: RosterUnit::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['roster:read:full'])]
     private Collection $units;
@@ -153,6 +157,9 @@ class Roster
         return $this;
     }
 
+    /**
+     * @return Collection<int, RosterUnit>
+     */
     public function getUnits(): Collection
     {
         return $this->units;

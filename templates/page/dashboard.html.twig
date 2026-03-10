@@ -3,25 +3,30 @@
 {% block title %}Dashboard | BattleScribe{% endblock %}
 
 {% block body %}
-    <div class="bs-card text-start mb-4">
-        <h1 class="mb-2">Welcome, {{ app.user.email }}</h1>
-        <p class="mb-0">Pick a faction to start building your roster. Each tile leads to its dedicated divisions.</p>
+<section class="selection-hero">
+    <div>
+        <p class="selection-kicker">Hello {{ app.user.email }}</p>
+        <h1 class="selection-title">Choose your army</h1>
+        <p class="selection-subtitle">Pick an army to see available divisions and start building your roster.</p>
     </div>
+</section>
 
-    <div class="faction-grid">
-        {% for faction in factions %}
-            {% set big = faction.name|length > 3 ? faction.name|slice(0, 2)|upper : faction.name|upper %}
-            <a href="{{ path('app_faction_divisions', {id: faction.id}) }}" class="bs-card faction-card text-center">
-                <span class="faction-code">{{ big }}</span>
-                <span class="faction-subcode">{{ faction.name|upper }}</span>
-                <span class="faction-dot"></span>
-                <p class="faction-description mb-0">{{ faction.description|default('') }}</p>
-            </a>
-        {% else %}
-            <div class="bs-card text-center">
-                No factions available. Run migrations to seed them.
+<section class="selection-grid">
+    {% for faction in factions %}
+        <a href="{{ path('app_faction_armies', {id: faction.id}) }}" class="selection-card">
+            <div class="selection-card__meta">
+                <span class="selection-pill">Army</span>
+                <span class="selection-code">{{ faction.name|upper }}</span>
             </div>
-        {% endfor %}
-    </div>
+            <h2 class="selection-card__title">{{ faction.name }}</h2>
+            <p class="selection-card__desc">{{ faction.description|default('No description provided.') }}</p>
+            <span class="selection-link">Open army →</span>
+        </a>
+    {% else %}
+        <div class="selection-empty">
+            No factions available. Run migrations to seed them.
+        </div>
+    {% endfor %}
+</section>
 {% endblock %}
 

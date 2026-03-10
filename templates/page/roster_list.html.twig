@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ faction.name }} | Rosters{% endblock %}
+
+{% block body %}
+<section class="selection-hero">
+    <div>
+        <p class="selection-kicker">Army</p>
+        <h1 class="selection-title">{{ faction.name }}</h1>
+        <p class="selection-subtitle">
+            {% if army %}
+                Army instance: {{ army.name }} — manage rosters inside this army.
+            {% else %}
+                Choose an army instance to manage rosters.
+            {% endif %}
+        </p>
+    </div>
+    <div class="selection-actions">
+        <a class="selection-btn ghost" href="{{ path('app_faction_armies', {id: faction.id}) }}">← Back to armies</a>
+    </div>
+</section>
+
+{% if not army %}
+    <div class="selection-empty">No army selected. Go back to armies list.</div>
+{% else %}
+
+<section class="selection-grid">
+    {% if rosters %}
+        {% for rd in rosters %}
+            <div class="selection-card">
+                <div class="selection-card__meta">
+                    <span class="selection-pill">Platoon</span>
+                    <span class="selection-pill ghost">{{ rd.division.name }}</span>
+                </div>
+                <h2 class="selection-card__title">{{ rd.name }}</h2>
+                <p class="selection-card__desc">Created {{ rd.createdAt|date('Y-m-d H:i') }}</p>
+                <p class="selection-meta">Total: {{ totals[rd.id]|default(0) }} pts</p>
+                <div class="selection-card__actions" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <a class="selection-btn" href="{{ path('app_roster_division', {id: rd.id}) }}">Open</a>
+                    <form method="post" action="{{ path('app_roster_division_delete', {id: rd.id}) }}" onsubmit="return confirm('Delete this platoon?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_roster_division_' ~ rd.id) }}">
+                        <button type="submit" class="selection-btn ghost danger">Delete</button>
+                    </form>
+                </div>
+                    {% set detail = rosterDetails[rd.id]|default(null) %}
+                    {% if detail and detail.units is defined %}
+                        <div class="builder-builds" style="margin-top: 8px;">
+                            <p class="builder-meta">Units in this platoon:</p>
+                            {% if detail.units is not empty %}
+                                <ul class="builder-meta" style="margin:4px 0 0 0; padding-left: 16px;">
+                                    {% for unit in detail.units %}
+                                        <li>{{ unit.name }} ({{ unit.experience }}) — {{ unit.cost }} pts</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="builder-meta">No units yet.</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="selection-empty">
+            No platoons yet for this army.
+        </div>
+    {% endif %}
+</section>
+
+<section id="create-roster" class="builder-card" style="max-width: 520px; margin-top: 1rem;">
+    <h2>Create new platoon</h2>
+    <form method="post" action="{{ path('app_faction_roster_create', {id: faction.id}) }}" class="auth-form" style="display:flex; flex-direction:column; gap:8px;">
+        <input type="hidden" name="army_id" value="{{ army.id }}">
+        <input type="hidden" name="name" value="">
+        <label class="builder-meta" for="division-id">Select platoon</label>
+        <select id="division-id" name="division_id" class="auth-input" required>
+            <option value="" disabled selected>Choose platoon...</option>
+            {% for div in divisions %}
+                {% if div.name != 'Engineer Platoon' %}
+                    <option value="{{ div.id }}">{{ div.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+
+        <div class="builder-actions" style="margin-top: 6px;">
+            <button type="submit" class="selection-btn">Create platoon</button>
+            <a class="selection-btn ghost" href="{{ path('app_faction_armies', {id: faction.id}) }}">Back to armies</a>
+        </div>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

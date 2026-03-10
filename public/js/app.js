@@ -24,6 +24,7 @@
         const $baseRadios = $root.find('[data-base-cost]');
         const $inputs = $root.find('#unit-options').find('input, select');
         const $restrictedInputs = $root.find('[data-requires-experience]');
+        const $optionBlocks = $root.find('[data-requires-experience-block]');
 
         $other.text(baseOtherPoints);
         $total.text(baseOtherPoints);
@@ -67,8 +68,36 @@
         $inputs.on('input change', updatePoints);
         updatePoints();
 
+        function resetBlockInputs($block) {
+            $block.find('input, select').each(function () {
+                const $input = $(this);
+                if ($input.attr('type') === 'number') {
+                    $input.val(0);
+                } else if ($input.attr('type') === 'checkbox') {
+                    $input.prop('checked', false);
+                } else if ($input.is('select')) {
+                    $input.prop('selectedIndex', 0);
+                }
+            });
+        }
+
         function updateOptionVisibility() {
             const currentExp = $baseRadios.filter(':checked').val();
+
+            // Blocks with explicit restriction
+            $optionBlocks.each(function () {
+                const $block = $(this);
+                const required = $block.data('requiresExperienceBlock');
+
+                if (!required || required === currentExp) {
+                    $block.show();
+                } else {
+                    resetBlockInputs($block);
+                    $block.hide();
+                }
+            });
+
+            // Legacy: ensure individual restricted inputs also obey visibility
             $restrictedInputs.each(function () {
                 const $input = $(this);
                 const required = $input.data('requiresExperience');
@@ -77,9 +106,7 @@
                 if (!required || required === currentExp) {
                     $block.show();
                 } else {
-                    if ($input.attr('type') === 'number') {
-                        $input.val(0);
-                    }
+                    resetBlockInputs($block);
                     $block.hide();
                 }
             });

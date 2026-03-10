@@ -10,8 +10,14 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * @implements ProcessorInterface<Roster, Roster>
+ */
 class RosterStateProcessor implements ProcessorInterface
 {
+    /**
+     * @param ProcessorInterface<Roster, Roster> $persistProcessor
+     */
     public function __construct(
         #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')]
         private readonly ProcessorInterface $persistProcessor,

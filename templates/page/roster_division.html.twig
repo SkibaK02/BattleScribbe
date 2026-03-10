@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ rosterDivision.name }} | {{ rosterDivision.division.name }}{% endblock %}
+
+{% block body %}
+<section class="selection-hero">
+    <div>
+        <p class="selection-kicker">{{ rosterDivision.division.name }}</p>
+        <h1 class="selection-title">{{ rosterDivision.name }}</h1>
+        <p class="selection-subtitle">{{ rosterDivision.division.description }}</p>
+    </div>
+    <div class="selection-actions">
+        <a class="selection-btn ghost" href="{{ path('app_faction_rosters', {id: rosterDivision.division.faction.id}) }}">← Back to platoons</a>
+    </div>
+</section>
+
+<section class="builder-hero-stats builder-stats-inline">
+    <div class="builder-stat">
+        <span class="builder-stat__label">Platoon points</span>
+        <span class="builder-stat__value">{{ totalPoints|default(0) }}</span>
+    </div>
+</section>
+
+<section class="builder-grid">
+    <div class="builder-card">
+        <div class="builder-unit__top">
+            <div>
+                <p class="builder-pill">Platoon units</p>
+                <h2 class="builder-card__title">{{ rosterDivision.name }}</h2>
+                <p class="builder-meta">Add units via picker below. Only added units are shown.</p>
+            </div>
+        </div>
+
+        {% if templates is empty %}
+            <p class="builder-empty">No unit templates available.</p>
+        {% endif %}
+
+        {% if builds is not empty %}
+            <div class="builder-builds" style="margin-top: 10px;">
+                <p class="builder-meta">Units in this roster:</p>
+                <div class="builder-build-list">
+                    {% for templateId, templateBuilds in builds %}
+                        {% for build in templateBuilds %}
+                            <div class="builder-build-line">
+                                <span>{{ build.unitTemplate.name }} — {{ build.experience }} — {{ build.totalCost }} pts</span>
+                                <div class="builder-build-actions">
+                                    <a class="selection-btn ghost" href="{{ path('app_unit_template_form', {id: build.unitTemplate.id, build: build.id, roster_division: rosterDivision.id}) }}">Edit</a>
+                                    <form method="post"
+                                          action="{{ path('app_unit_build_delete', {id: build.id}) }}"
+                                          onsubmit="return confirm('Remove this unit?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete_unit_build_' ~ build.id) }}">
+                                        <button type="submit" class="selection-btn ghost danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <p class="builder-meta">No units added yet.</p>
+        {% endif %}
+
+        <div class="builder-actions" style="margin-top: 12px; display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+            <label class="builder-meta" for="template-select">Add unit</label>
+            <select id="template-select" class="auth-input" style="min-width:220px;">
+                <option value="" disabled selected>Select unit...</option>
+                {% for template in templates %}
+                    {% if singleBlocked[template.name]|default(false) %}
+                        {# skip units limited to one per roster #}
+                    {% else %}
+                        <option data-url="{{ path('app_unit_template_form', {id: template.id, roster_division: rosterDivision.id}) }}">{{ template.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <button type="button" class="selection-btn" onclick="
+                (function(){
+                    const sel = document.getElementById('template-select');
+                    const opt = sel.options[sel.selectedIndex];
+                    if (opt && opt.dataset.url) { window.location = opt.dataset.url; }
+                })();
+            ">Add</button>
+        </div>
+    </div>
+</section>
+{% endblock %}

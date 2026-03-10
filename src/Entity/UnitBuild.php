@@ -21,9 +21,15 @@ class UnitBuild
     #[ORM\JoinColumn(nullable: false)]
     private ?UnitTemplate $unitTemplate = null;
 
+    #[ORM\ManyToOne(inversedBy: 'unitBuilds')]
+    private ?RosterDivision $rosterDivision = null;
+
     #[ORM\Column(length: 50)]
     private string $experience;
 
+    /**
+     * @var array<string, mixed>
+     */
     #[ORM\Column(type: 'json')]
     private array $configuration = [];
 
@@ -65,6 +71,17 @@ class UnitBuild
         return $this;
     }
 
+    public function getRosterDivision(): ?RosterDivision
+    {
+        return $this->rosterDivision;
+    }
+
+    public function setRosterDivision(?RosterDivision $rosterDivision): self
+    {
+        $this->rosterDivision = $rosterDivision;
+        return $this;
+    }
+
     public function getExperience(): string
     {
         return $this->experience;
@@ -76,11 +93,17 @@ class UnitBuild
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getConfiguration(): array
     {
         return $this->configuration;
     }
 
+    /**
+     * @param array<string, mixed> $configuration
+     */
     public function setConfiguration(array $configuration): self
     {
         $this->configuration = $configuration;

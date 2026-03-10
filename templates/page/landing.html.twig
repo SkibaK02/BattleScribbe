@@ -1,14 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BattleScribe | Start{% endblock %}
+{% block title %}BattleScribe{% endblock %}
 
 {% block body %}
-    <div class="bs-card bs-card-hero">
-        <h1 class="mb-3">Welcome to BattleScribe</h1>
-        <p class="mb-4">Build roster lists based on factions, divisions, and unit templates. The whole experience is secured behind authentication and ready to evolve.</p>
-        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-            <a class="bs-btn" href="{{ path('app_login') }}">Go to login</a>
-            <a class="bs-btn bs-btn-alt" href="{{ path('app_register_form') }}">Create an account</a>
-        </div>
+<section class="selection-hero" style="text-align:left; gap: 12px;">
+    <div>
+        <p class="selection-kicker">Welcome to BattleScribe</p>
+        <h1 class="selection-title">Build armies, platoons and units with ease</h1>
+        <p class="selection-subtitle">Create armies, manage platoons and export clean PDFs. Log in or register to start assembling your force.</p>
     </div>
+    <div class="selection-actions" style="gap: 0.75rem; flex-wrap: wrap;">
+        <a class="selection-btn" href="{{ path('app_login') }}">Log in</a>
+        <a class="selection-btn ghost" href="{{ path('app_register_form') }}">Register</a>
+    </div>
+</section>
+
+<section class="builder-grid" style="margin-top: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+    <div class="builder-card">
+        <p class="builder-pill">Step 1</p>
+        <h3 class="builder-card__title">Create an army</h3>
+        <p class="builder-meta">Start from an army (e.g., USA, UK) and add your platoons.</p>
+    </div>
+    <div class="builder-card">
+        <p class="builder-pill">Step 2</p>
+        <h3 class="builder-card__title">Add platoons & units</h3>
+        <p class="builder-meta">Pick platoons, configure units, see live point totals.</p>
+    </div>
+    <div class="builder-card">
+        <p class="builder-pill">Step 3</p>
+        <h3 class="builder-card__title">Export PDFs</h3>
+        <p class="builder-meta">Download a clean PDF of your army, platoons, and units.</p>
+    </div>
+</section>
 {% endblock %}

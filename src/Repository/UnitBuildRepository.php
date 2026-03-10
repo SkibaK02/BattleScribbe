@@ -20,15 +20,15 @@ class UnitBuildRepository extends ServiceEntityRepository
 
     public function save(UnitBuild $entity, bool $flush = false): void
     {
-        $this->_em->persist($entity);
+        $this->getEntityManager()->persist($entity);
 
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 
     /**
-     * @return UnitBuild[]
+     * @return array<UnitBuild>
      */
     public function findByOwnerAndDivision(User $owner, Division $division): array
     {
@@ -40,6 +40,21 @@ class UnitBuildRepository extends ServiceEntityRepository
             ->setParameter('division', $division)
             ->orderBy('t.name', 'ASC')
             ->addOrderBy('b.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return array<UnitBuild>
+     */
+    public function findByOwnerAndRosterDivision(User $owner, int $rosterDivisionId): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.owner = :owner')
+            ->andWhere('b.rosterDivision = :rd')
+            ->setParameter('owner', $owner)
+            ->setParameter('rd', $rosterDivisionId)
+            ->orderBy('b.createdAt', 'ASC')
             ->getQuery()
             ->getResult();
     }

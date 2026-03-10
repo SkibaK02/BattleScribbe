@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ faction.name }} | Armies{% endblock %}
+
+{% block body %}
+<style>
+    .selection-btn.danger {
+        background: linear-gradient(135deg, #ffe7e7, #ffd6d6);
+        border: 1px solid #f3b6b6;
+        color: #b31717;
+        height: 42px;
+        padding: 0 18px;
+        border-radius: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .selection-btn.danger:hover {
+        background: linear-gradient(135deg, #ffd6d6, #ffc4c4);
+        color: #9c1111;
+    }
+</style>
+<style>
+    .roster-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .roster-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px; background: #fafbff; }
+    .roster-item__header { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
+    .roster-units { margin: 6px 0 0 0; padding-left: 16px; }
+    .roster-pill { padding: 2px 8px; border-radius: 999px; background: #eef2ff; font-size: 12px; color: #3f4f8a; }
+</style>
+
+<section class="selection-hero">
+    <div>
+        <p class="selection-kicker">Army</p>
+        <h1 class="selection-title">{{ faction.name }}</h1>
+        <p class="selection-subtitle">Create multiple armies for this faction. Each army will hold its own rosters and divisions.</p>
+    </div>
+    <div class="selection-actions">
+        <a class="selection-btn ghost" href="{{ path('app_dashboard') }}">← Change army</a>
+    </div>
+</section>
+
+<section class="selection-grid">
+    {% if armies %}
+        {% for army in armies %}
+            <div class="selection-card">
+                <div class="selection-card__meta">
+                    <span class="selection-pill">Army</span>
+                </div>
+                <h2 class="selection-card__title">{{ army.name }}</h2>
+                <p class="selection-card__desc">Created {{ army.createdAt|date('Y-m-d H:i') }}</p>
+                <p class="selection-meta">Total: {{ totals[army.id]|default(0) }} pts</p>
+                <div class="selection-card__actions" style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <a class="selection-btn" href="{{ path('app_faction_rosters', {id: faction.id, army: army.id}) }}">Open roster</a>
+                    <a class="selection-btn ghost" href="{{ path('app_army_export_pdf', {id: army.id}) }}">Export PDF</a>
+                    <form method="post" action="{{ path('app_army_delete', {id: army.id}) }}" onsubmit="return confirm('Delete this army?');" style="margin:0;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_army_' ~ army.id) }}">
+                        <button type="submit" class="selection-btn danger">Delete</button>
+                    </form>
+                </div>
+            {% set details = armiesDetails[army.id]|default({'rosters': []}) %}
+            {% if details.rosters is not empty %}
+                    <div class="builder-builds" style="margin-top: 10px;">
+                        <p class="builder-meta">Platoons in this army:</p>
+                        <div class="roster-list">
+                            {% for roster in details.rosters %}
+                                <div class="roster-item">
+                                    <div class="roster-item__header">
+                                        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                                            <strong>{{ roster.name }}</strong>
+                                            <span class="roster-pill">{{ roster.division|default('Division') }}</span>
+                                        </div>
+                                        <span class="builder-meta">{{ roster.points|default(0) }} pts</span>
+                                    </div>
+                                    {% if roster.units is defined and roster.units is not empty %}
+                                        <ul class="builder-meta roster-units">
+                                            {% for unit in roster.units %}
+                                                <li>{{ unit.name }} ({{ unit.experience }}) — {{ unit.cost }} pts</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="builder-meta" style="margin:4px 0 0 0;">No units yet.</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+            {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="selection-empty">No armies yet. Create your first army below.</div>
+    {% endif %}
+</section>
+
+<section class="builder-card" style="max-width: 520px; margin-top: 1rem;">
+    <h2>Create new army</h2>
+    <form method="post" action="{{ path('app_army_create', {id: faction.id}) }}" class="auth-form" style="display:flex; flex-direction:column; gap:8px;">
+        <label class="builder-meta" for="army-name">Army name (optional)</label>
+        <input id="army-name" name="name" class="auth-input" placeholder="Army #{{ armies|length + 1 }}">
+        <div class="builder-actions" style="margin-top: 6px;">
+            <button type="submit" class="selection-btn">Create army</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

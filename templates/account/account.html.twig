@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Account | BattleScribe{% endblock %}
+
+{% block body %}
+<section class="account-shell">
+    <div class="account-card">
+        <div class="account-header">
+            <p class="account-kicker">Your account</p>
+            <h1 class="account-title">{{ user.email }}</h1>
+            <p class="account-meta">Created: {{ user.createdAt|date('Y-m-d H:i') }}</p>
+        </div>
+
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="account-alert {{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="account-section">
+            <h2>Change password</h2>
+            <form method="post" action="{{ path('app_account_password') }}" class="account-form">
+                <label for="newPassword" class="account-label">New password (min. 8 chars)</label>
+                <input type="password" id="newPassword" name="password" required minlength="8" class="account-input">
+                <button type="submit" class="account-btn">Update password</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

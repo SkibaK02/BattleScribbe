@@ -50,6 +50,9 @@ class Division
     #[Groups(['division:read', 'division:write', 'division:read:full'])]
     private ?Faction $faction = null;
 
+    /**
+     * @var Collection<int, UnitTemplate>
+     */
     #[ORM\OneToMany(mappedBy: 'division', targetEntity: UnitTemplate::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['division:read:full'])]
     private Collection $unitTemplates;
@@ -102,6 +105,9 @@ class Division
         return $this;
     }
 
+    /**
+     * @return Collection<int, UnitTemplate>
+     */
     public function getUnitTemplates(): Collection
     {
         return $this->unitTemplates;

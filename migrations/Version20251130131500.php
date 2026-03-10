@@ -72,31 +72,36 @@ final class Version20251130131500 extends AbstractMigration
     private function getSeedData(): array
     {
         $commonDivisions = [
-            'Rifle Platoon' => 'Lekka piechota liniowa, uniwersalne oddziały zdolne do zabezpieczania punktów.',
-            'Armoured Platoon' => 'Zmotoryzowane lub pancerne elementy szturmowe z pojazdami wsparcia.',
-            'Engineer Platoon' => 'Specjaliści od umocnień, ładunków wybuchowych i operacji wsparcia.',
-            'Heavy Platoon' => 'Ciężkie uzbrojenie: wsparcie ogniowe, działa, broń przeciwpancerna.',
+            'Rifle Platoon' => 'Standard infantry platoon used to build core rosters.',
+            'Armoured Platoon' => 'Armoured/vehicle platoon for mechanised assaults.',
+            'Engineer Platoon' => 'Engineering specialists (fortifications, demolitions, support).',
+            'Heavy Platoon' => 'Heavy weapons support platoon (fire support / AT / artillery).',
         ];
 
         return [
-            'UK' => [
-                'description' => 'Siły Wspólnoty Brytyjskiej, elitarne jednostki komandosów i regularne dywizje.',
+            'United Kingdom' => [
+                'description' => 'Commonwealth forces with elite commandos and regular divisions.',
                 'icon' => '🇬🇧',
                 'divisions' => $commonDivisions,
             ],
-            'USA' => [
-                'description' => 'Armia Stanów Zjednoczonych, zmechanizowane oddziały i wszechstronna piechota.',
+            'United States' => [
+                'description' => 'United States Army with mechanised formations and versatile infantry.',
                 'icon' => '🇺🇸',
                 'divisions' => $commonDivisions,
             ],
-            'ZSRR' => [
-                'description' => 'Siły Armii Czerwonej, masowe formacje piechoty i potężne jednostki pancerne.',
+            'Soviet Union' => [
+                'description' => 'Red Army formations with mass infantry and powerful armoured units.',
                 'icon' => '🇷🇺',
                 'divisions' => $commonDivisions,
             ],
-            'JPN' => [
-                'description' => 'Cesarska Armia Japońska, szybkie oddziały szturmowe i wyszkoleni inżynierowie.',
+            'Japan' => [
+                'description' => 'Imperial Japanese Army with fast assault troops and skilled engineers.',
                 'icon' => '🇯🇵',
+                'divisions' => $commonDivisions,
+            ],
+            'Germany' => [
+                'description' => 'Wehrmacht/Panzer divisions with combined arms.',
+                'icon' => '🇩🇪',
                 'divisions' => $commonDivisions,
             ],
         ];

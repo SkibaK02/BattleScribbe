@@ -3,27 +3,33 @@
 {% block title %}Login | BattleScribe{% endblock %}
 
 {% block body %}
-    <div class="bs-card mx-auto" style="max-width: 500px;">
-        <h1 class="mb-4">Sign in</h1>
+<section class="auth-shell">
+    <div class="auth-card">
+        <div class="auth-header">
+            <p class="auth-kicker">Welcome back</p>
+            <h1 class="auth-title">Sign in</h1>
+        </div>
+
         {% if error %}
-            <div class="alert flash-error mb-4">
+            <div class="auth-alert error">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
         {% endif %}
-        <form method="post" action="{{ path('app_login') }}" class="bs-form">
-            <label for="inputEmail">Email</label>
-            <input type="email" id="inputEmail" name="_username" value="{{ last_username }}" required autofocus autocomplete="email">
 
-            <label for="inputPassword">Password</label>
-            <input type="password" id="inputPassword" name="_password" required autocomplete="current-password">
+        <form method="post" action="{{ path('app_login') }}" class="auth-form">
+            <label class="auth-label" for="inputEmail">Email</label>
+            <input class="auth-input" type="email" id="inputEmail" name="_username" value="{{ last_username }}" required autofocus autocomplete="email">
+
+            <label class="auth-label" for="inputPassword">Password</label>
+            <input class="auth-input" type="password" id="inputPassword" name="_password" required autocomplete="current-password">
 
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-            <button class="bs-btn w-100" type="submit">Log in</button>
+            <button class="auth-btn" type="submit">Log in</button>
         </form>
-        <div class="auth-meta">
-            No account yet? <a href="{{ path('app_register_form') }}" class="link-light">Create one</a>
-        </div>
+
+        <p class="auth-meta">No account yet? <a href="{{ path('app_register_form') }}">Create one</a></p>
     </div>
+</section>
 {% endblock %}
 

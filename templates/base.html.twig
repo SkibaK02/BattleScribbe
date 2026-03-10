@@ -9,31 +9,33 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         {% block stylesheets %}{% endblock %}
     </head>
-    <body class="bs-body">
-        <header class="bs-header shadow-sm">
-            <div class="container-fluid d-flex align-items-center justify-content-between py-3 px-3 px-md-4">
-                <a class="brand text-uppercase fw-bold letter-spacing nav-link p-0" href="{{ path('app_landing') }}">BattleScribe</a>
-                <nav class="nav gap-3">
+    <body>
+        <header class="site-header">
+            <div class="site-header__inner">
+                <a class="brand" href="{{ path('app_landing') }}">BattleScribe</a>
+
+                <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+                <label for="nav-toggle" class="nav-toggle-label" aria-hidden="true">
+                    <span></span>
+                </label>
+
+                <nav class="nav-links" aria-label="Main navigation">
                     {% if app.user %}
-                        <a href="{{ path('app_dashboard') }}" class="nav-link {{ app.request.get('_route') in ['app_dashboard', 'app_faction_divisions', 'app_division_slots', 'app_unit_template_form'] ? 'active' : '' }}">Dashboard</a>
-                        <a href="{{ path('app_me') }}" class="nav-link">API Profile</a>
-                        <a href="{{ path('app_logout') }}" class="nav-link">Logout</a>
+                        <a href="{{ path('app_dashboard') }}" class="{{ app.request.get('_route') in ['app_dashboard', 'app_faction_divisions', 'app_division_slots', 'app_unit_template_form'] ? 'active' : '' }}">Dashboard</a>
+                        <a href="{{ path('app_account') }}" class="{{ app.request.get('_route') == 'app_account' ? 'active' : '' }}">Account</a>
+                        <a href="{{ path('app_logout') }}" class="accent">Log out</a>
                     {% else %}
-                        <a href="{{ path('app_landing') }}" class="nav-link {{ app.request.get('_route') == 'app_landing' ? 'active' : '' }}">Landing</a>
-                        <a href="{{ path('app_login') }}" class="nav-link {{ app.request.get('_route') starts with 'app_login' ? 'active' }}">Login</a>
-                        <a href="{{ path('app_register_form') }}" class="nav-link {{ app.request.get('_route') starts with 'app_register' ? 'active' }}">Register</a>
+                        <a href="{{ path('app_landing') }}" class="{{ app.request.get('_route') == 'app_landing' ? 'active' : '' }}">Home</a>
+                        <a href="{{ path('app_login') }}" class="{{ app.request.get('_route') starts with 'app_login' ? 'active' : '' }}">Login</a>
+                        <a href="{{ path('app_register_form') }}" class="{{ app.request.get('_route') starts with 'app_register' ? 'active' : '' }}">Register</a>
                     {% endif %}
                 </nav>
             </div>
         </header>
-        <main class="container bs-main py-4">
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="alert mb-3 flash-{{ label }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endfor %}
+
+        <main class="page">
+            {# absorb flashes without rendering (hide notifications) #}
+            {% for _label, _messages in app.flashes %}{% endfor %}
             {% block body %}{% endblock %}
         </main>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-3gJwYp4xfN/0y9VOGQsv5nYeD5wlaQt1zArKeQw3hTU=" crossorigin="anonymous"></script>

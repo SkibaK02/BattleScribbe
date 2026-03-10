@@ -55,6 +55,9 @@ class RosterUnit
     #[Groups(['roster_unit:read', 'roster_unit:write', 'roster:read:full'])]
     private int $quantity = 1;
 
+    /**
+     * @var Collection<int, RosterUnitWeapon>
+     */
     #[ORM\OneToMany(mappedBy: 'rosterUnit', targetEntity: RosterUnitWeapon::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
     #[Groups(['roster_unit:read:full', 'roster:read:full'])]
     private Collection $weapons;
@@ -118,6 +121,9 @@ class RosterUnit
         return $this;
     }
 
+    /**
+     * @return Collection<int, RosterUnitWeapon>
+     */
     public function getWeapons(): Collection
     {
         return $this->weapons;
