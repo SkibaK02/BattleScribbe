@@ -102,6 +102,7 @@ class DivisionController extends AbstractController
         $templates = array_values(array_filter(
             $templates,
             fn($t) => $this->unitConfigProvider->isTemplateAllowedForFaction($t, $division->getFaction())
+                && $this->unitConfigProvider->isTemplateAllowedForDivision($t)
                 && $this->unitConfigProvider->getConfig($t) !== null
         ));
 

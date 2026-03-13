@@ -1,0 +1,457 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 \$division of method App\\Entity\\UnitTemplate\:\:setDivision\(\) expects App\\Entity\\Division, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Entity/Division.php
+
+		-
+			message: '#^Parameter \#1 \$faction of method App\\Entity\\Division\:\:setFaction\(\) expects App\\Entity\\Faction, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Entity/Faction.php
+
+		-
+			message: '#^Method App\\Entity\\User\:\:getUserIdentifier\(\) should return non\-empty\-string but returns string\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Parameter \#1 \$owner of method App\\Entity\\ArmyInstance\:\:setOwner\(\) expects App\\Entity\\User, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Entity/User.php
+
+		-
+			message: '#^Method App\\Repository\\ArmyInstanceRepository\:\:findByOwnerAndFaction\(\) should return array\<App\\Entity\\ArmyInstance\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Repository/ArmyInstanceRepository.php
+
+		-
+			message: '#^Method App\\Repository\\RosterDivisionRepository\:\:findByOwnerAndDivision\(\) should return array\<App\\Entity\\RosterDivision\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Repository/RosterDivisionRepository.php
+
+		-
+			message: '#^Method App\\Repository\\RosterDivisionRepository\:\:findByOwnerAndFaction\(\) should return array\<App\\Entity\\RosterDivision\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Repository/RosterDivisionRepository.php
+
+		-
+			message: '#^Method App\\Repository\\UnitBuildRepository\:\:findByOwnerAndDivision\(\) should return array\<App\\Entity\\UnitBuild\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Repository/UnitBuildRepository.php
+
+		-
+			message: '#^Method App\\Repository\\UnitBuildRepository\:\:findByOwnerAndRosterDivision\(\) should return array\<App\\Entity\\UnitBuild\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Repository/UnitBuildRepository.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: src/Service/Unit/UnitConfigProvider.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitConfigProvider\:\:getConfig\(\) should return array\<string, mixed\>\|null but returns array\.$#'
+			identifier: return.type
+			count: 5
+			path: src/Service/Unit/UnitConfigProvider.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitConfigProvider\:\:getConfig\(\) should return array\<string, mixed\>\|null but returns array\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/Unit/UnitConfigProvider.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/Unit/UnitConfigProvider.php
+
+		-
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Unit/UnitConfigProvider.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Entity\\Division\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: src/Service/Unit/UnitConfigProvider.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 3
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\*" between int and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 2
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\*" between mixed and int results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\+" between mixed and \(float\|int\) results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\+" between mixed and 0\|5 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\+\=" between mixed and \(float\|int\) results in an error\.$#'
+			identifier: assignOp.invalid
+			count: 4
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\+\=" between mixed and 5 results in an error\.$#'
+			identifier: assignOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\+\=" between mixed and int results in an error\.$#'
+			identifier: assignOp.invalid
+			count: 2
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\-" between mixed and 1 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Binary operation "\-" between mixed and float\|int\<0, max\> results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''cost'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 4
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''cost_per'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''cost_per_model'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''key'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''label'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''max'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''name'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''options'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''per_model'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''restricted_to'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''type'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot access offset ''value'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 7
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitCostCalculator\:\:calculate\(\) has parameter \$config with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitCostCalculator\:\:calculate\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitCostCalculator\:\:calculate\(\) should return array\{errors\: array\<int, string\>, total\: int, payload\: array\<string, mixed\>\} but returns array\{errors\: list\<non\-falsy\-string\>, total\: mixed, payload\: array\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Parameter \#1 \$haystack of function str_starts_with expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 3
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 9
+			path: src/Service/Unit/UnitCostCalculator.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Binary operation "\+" between mixed and int results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Binary operation "\+\=" between \(float\|int\) and mixed results in an error\.$#'
+			identifier: assignOp.invalid
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''add_lkm'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''extra_inexperienced'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''extra_regular'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''extra_veteran'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''improved_armour'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''lmg_count'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''men_smg_count'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''mg_variant'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''mortar_type'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''nco_smg'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''officer_pistol'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''officer_smg'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''pintle_hmg'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''sas_training'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot access offset ''smoke'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot call method getTotalCost\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 5
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:collectUsedOptions\(\) should return array\<string\> but returns list\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:isBritish\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:isBritishFaction\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:optionReferenceHtml\(\) has parameter \$used with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Offset ''build'' does not exist on array\<int, App\\Entity\\UnitBuild\>\.$#'
+			identifier: offsetAccess.notFound
+			count: 2
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtoupper expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Parameter \#1 \$string of function ucfirst expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Parameter \#2 \$divisionData of method App\\Service\\Unit\\UnitPdfExporter\:\:buildFactionHtml\(\) expects array\<string, array\<string, array\<int, App\\Entity\\UnitBuild\>\>\>, array\<string, array\<int, array\<string, App\\Entity\\UnitBuild\|string\>\>\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type App\\Entity\\Faction\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Service/Unit/UnitPdfExporter.php

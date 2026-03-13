@@ -24,7 +24,7 @@ class RosterDivisionRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->andWhere('r.owner = :user')
-            ->andWhere('r.division = :division')
+            ->andWhere('IDENTITY(r.division) = :division')
             ->setParameter('user', $user)
             ->setParameter('division', $divisionId)
             ->orderBy('r.createdAt', 'ASC')
@@ -40,7 +40,7 @@ class RosterDivisionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->join('r.division', 'd')
             ->andWhere('r.owner = :user')
-            ->andWhere('d.faction = :faction')
+            ->andWhere('IDENTITY(d.faction) = :faction')
             ->setParameter('user', $user)
             ->setParameter('faction', $factionId)
             ->orderBy('r.createdAt', 'ASC')

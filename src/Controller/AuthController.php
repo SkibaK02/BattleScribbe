@@ -101,22 +101,6 @@ class AuthController extends AbstractController
         return $this->redirectToRoute('app_login');
     }
 
-    #[Route('/me', name: 'app_me', methods: ['GET'])]
-    public function me(): JsonResponse
-    {
-        $user = $this->getUser();
-
-        if (!$user instanceof User) {
-            return new JsonResponse(null, Response::HTTP_UNAUTHORIZED);
-        }
-
-        return new JsonResponse([
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'roles' => $user->getRoles(),
-        ]);
-    }
-
     #[Route('/account', name: 'app_account', methods: ['GET'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function account(): Response

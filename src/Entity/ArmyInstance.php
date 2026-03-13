@@ -17,11 +17,11 @@ class ArmyInstance
 
     #[ORM\ManyToOne(inversedBy: 'armyInstances')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private User $owner;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Faction $faction = null;
+    private Faction $faction;
 
     #[ORM\Column(length: 190)]
     private string $name;
@@ -29,6 +29,9 @@ class ArmyInstance
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    /**
+     * @var Collection<int, RosterDivision>
+     */
     #[ORM\OneToMany(mappedBy: 'armyInstance', targetEntity: RosterDivision::class)]
     private Collection $rosterDivisions;
 
@@ -43,7 +46,7 @@ class ArmyInstance
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -54,7 +57,7 @@ class ArmyInstance
         return $this;
     }
 
-    public function getFaction(): ?Faction
+    public function getFaction(): Faction
     {
         return $this->faction;
     }

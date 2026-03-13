@@ -3,6 +3,16 @@
 {% block title %}{{ faction.name }} | Rosters{% endblock %}
 
 {% block body %}
+<style>
+    /* Align delete buttons with other action buttons */
+    .selection-btn.ghost.danger {
+        height: 42px;
+        padding: 0 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
 <section class="selection-hero">
     <div>
         <p class="selection-kicker">Army</p>

@@ -51,7 +51,7 @@ class UnitBuildRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('b')
             ->andWhere('b.owner = :owner')
-            ->andWhere('b.rosterDivision = :rd')
+            ->andWhere('IDENTITY(b.rosterDivision) = :rd')
             ->setParameter('owner', $owner)
             ->setParameter('rd', $rosterDivisionId)
             ->orderBy('b.createdAt', 'ASC')

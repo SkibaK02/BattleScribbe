@@ -48,7 +48,7 @@ class Division
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['division:read', 'division:write', 'division:read:full'])]
-    private ?Faction $faction = null;
+    private Faction $faction;
 
     /**
      * @var Collection<int, UnitTemplate>
@@ -94,12 +94,12 @@ class Division
         return $this;
     }
 
-    public function getFaction(): ?Faction
+    public function getFaction(): Faction
     {
         return $this->faction;
     }
 
-    public function setFaction(?Faction $faction): self
+    public function setFaction(Faction $faction): self
     {
         $this->faction = $faction;
         return $this;

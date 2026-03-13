@@ -1,7 +1,15 @@
+includes:
+  - phpstan-baseline.neon
+
 parameters:
   level: max
   paths:
     - src
+    - tests
+  excludePaths:
+    - src/Controller
+  ignoreErrors:
+    - '#UnitConfigProvider::.*no value type specified in iterable type array#'
   tmpDir: var/phpstan
   treatPhpDocTypesAsCertain: false
   reportUnmatchedIgnoredErrors: true

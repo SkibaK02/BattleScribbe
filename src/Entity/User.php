@@ -24,7 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    private ?string $email = null;
+    private string $email = '';
 
     /**
      * @var array<string>
@@ -39,12 +39,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $createdAt;
 
     /**
-     * @var Collection<int, Roster>
-     */
-    #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Roster::class, orphanRemoval: true)]
-    private Collection $rosters;
-
-    /**
      * @var Collection<int, ArmyInstance>
      */
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: ArmyInstance::class, orphanRemoval: true)]
@@ -53,7 +47,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->rosters = new ArrayCollection();
         $this->armyInstances = new ArrayCollection();
     }
 
@@ -62,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -104,7 +97,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return $this->email ?? '';
+        return $this->email;
     }
 
     /**
@@ -156,33 +149,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->createdAt;
     }
 
-    /**
-     * @return Collection<int, Roster>
-     */
-    public function getRosters(): Collection
-    {
-        return $this->rosters;
-    }
-
-    public function addRoster(Roster $roster): self
-    {
-        if (!$this->rosters->contains($roster)) {
-            $this->rosters->add($roster);
-            $roster->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRoster(Roster $roster): self
-    {
-        if ($this->rosters->removeElement($roster)) {
-            if ($roster->getOwner() === $this) {
-                $roster->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
 }
 

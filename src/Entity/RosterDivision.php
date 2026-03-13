@@ -17,11 +17,11 @@ class RosterDivision
 
     #[ORM\ManyToOne(inversedBy: 'rosterDivisions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private User $owner;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Division $division = null;
+    private Division $division;
 
     #[ORM\ManyToOne(inversedBy: 'rosterDivisions')]
     private ?ArmyInstance $armyInstance = null;
@@ -32,6 +32,9 @@ class RosterDivision
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    /**
+     * @var Collection<int, UnitBuild>
+     */
     #[ORM\OneToMany(mappedBy: 'rosterDivision', targetEntity: UnitBuild::class)]
     private Collection $unitBuilds;
 
@@ -46,7 +49,7 @@ class RosterDivision
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -57,7 +60,7 @@ class RosterDivision
         return $this;
     }
 
-    public function getDivision(): ?Division
+    public function getDivision(): Division
     {
         return $this->division;
     }

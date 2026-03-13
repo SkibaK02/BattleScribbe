@@ -16,8 +16,3 @@ services:
             - '../src/Tests/'
             - '../src/Kernel.php'
 
-    # opcjonalnie: jeśli używasz API Platform extension
-    App\Doctrine\Extension\CurrentUserExtension:
-        tags:
-            - { name: 'api_platform.doctrine.orm.query_extension.collection', priority: 64 }
-            - { name: 'api_platform.doctrine.orm.query_extension.item', priority: 64 }

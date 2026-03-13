@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\UnitTemplateRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -73,23 +71,7 @@ class UnitTemplate
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotNull]
     #[Groups(['unit_template:read', 'unit_template:write'])]
-    private ?Division $division = null;
-
-    /**
-     * @var Collection<int, Weapon>
-     */
-    #[ORM\ManyToMany(targetEntity: Weapon::class)]
-    #[ORM\JoinTable(name: 'unit_template_weapon')]
-    #[Groups(['unit_template:read:full', 'unit_template:write'])]
-    private Collection $weapons;
-
-    /**
-     * @var Collection<int, SpecialRule>
-     */
-    #[ORM\ManyToMany(targetEntity: SpecialRule::class)]
-    #[ORM\JoinTable(name: 'unit_template_special_rule')]
-    #[Groups(['unit_template:read:full', 'unit_template:write'])]
-    private Collection $specialRules;
+    private Division $division;
 
     #[ORM\Column]
     #[Groups(['unit_template:read'])]
@@ -97,8 +79,6 @@ class UnitTemplate
 
     public function __construct()
     {
-        $this->weapons = new ArrayCollection();
-        $this->specialRules = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -184,75 +164,19 @@ class UnitTemplate
         return $this;
     }
 
-    public function getDivision(): ?Division
+    public function getDivision(): Division
     {
         return $this->division;
     }
 
-    public function setDivision(?Division $division): self
+    public function setDivision(Division $division): self
     {
         $this->division = $division;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Weapon>
-     */
-    public function getWeapons(): Collection
-    {
-        return $this->weapons;
-    }
-
-    public function addWeapon(Weapon $weapon): self
-    {
-        if (!$this->weapons->contains($weapon)) {
-            $this->weapons->add($weapon);
-        }
-        return $this;
-    }
-
-    public function removeWeapon(Weapon $weapon): static
-    {
-        $this->weapons->removeElement($weapon);
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, SpecialRule>
-     */
-    public function getSpecialRules(): Collection
-    {
-        return $this->specialRules;
-    }
-
-    public function addSpecialRule(SpecialRule $specialRule): self
-    {
-        if (!$this->specialRules->contains($specialRule)) {
-            $this->specialRules->add($specialRule);
-        }
-        return $this;
-    }
-
-    public function removeSpecialRule(SpecialRule $specialRule): static
-    {
-        $this->specialRules->removeElement($specialRule);
         return $this;
     }
 
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    #[Groups(['unit_template:read'])]
-    public function getWeaponsCount(): int
-    {
-        return $this->weapons->count();
-    }
-
-    #[Groups(['unit_template:read'])]
-    public function getSpecialRulesCount(): int
-    {
-        return $this->specialRules->count();
     }
 }

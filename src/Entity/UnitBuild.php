@@ -15,11 +15,11 @@ class UnitBuild
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private User $owner;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?UnitTemplate $unitTemplate = null;
+    private UnitTemplate $unitTemplate;
 
     #[ORM\ManyToOne(inversedBy: 'unitBuilds')]
     private ?RosterDivision $rosterDivision = null;
@@ -49,7 +49,7 @@ class UnitBuild
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
@@ -60,7 +60,7 @@ class UnitBuild
         return $this;
     }
 
-    public function getUnitTemplate(): ?UnitTemplate
+    public function getUnitTemplate(): UnitTemplate
     {
         return $this->unitTemplate;
     }

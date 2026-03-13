@@ -24,7 +24,7 @@ class ArmyInstanceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('a')
             ->andWhere('a.owner = :user')
-            ->andWhere('a.faction = :faction')
+            ->andWhere('IDENTITY(a.faction) = :faction')
             ->setParameter('user', $user)
             ->setParameter('faction', $factionId)
             ->orderBy('a.createdAt', 'ASC')

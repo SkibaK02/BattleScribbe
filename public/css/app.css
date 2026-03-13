@@ -136,6 +136,8 @@ body {
 
 .auth-input {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 0.7rem 0.9rem;
     border: 1px solid #d1d5db;
     border-radius: 10px;
@@ -1174,3 +1176,48 @@ main.container > * + * {
     }
 }
 
+.card-actions-inline {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+.form-inline-zero {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+}
+
+.card-520 {
+    max-width: 520px;
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+.create-army-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 520px;
+    width: 100%;
+}
+
+.create-army-input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.mt-4 { margin: 4px 0 0 0; }
+.mt-6 { margin-top: 6px; }
+.mt-10 { margin-top: 10px; }
+
+@media (max-width: 520px) {
+    .create-army-input {
+        max-width: 100%;
+    }
+}

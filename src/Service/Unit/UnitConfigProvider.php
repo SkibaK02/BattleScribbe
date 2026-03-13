@@ -7,6 +7,9 @@ use App\Entity\Faction;
 
 class UnitConfigProvider
 {
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getConfig(UnitTemplate $unitTemplate): ?array
     {
         $name = $unitTemplate->getName();
@@ -34,7 +37,6 @@ class UnitConfigProvider
             }
         }
 
-        // Armoured platoon: faction-specific vehicle variants
         $transportMap = [
             'universal carrier' => ['label' => 'Universal Carrier', 'capacity' => 8],
             'm3 half-track' => ['label' => 'M3 Half-track', 'capacity' => 8],
@@ -96,22 +98,34 @@ class UnitConfigProvider
         ];
 
         if (!isset($map[$name])) {
-            return true; // common unit
+            return true;
         }
 
         foreach ($map[$name] as $needle) {
-            if ($needle !== '' && str_contains($factionName, $needle)) {
+            if (str_contains($factionName, $needle)) {
                 return true;
             }
         }
         return false;
     }
 
+    public function isTemplateAllowedForDivision(UnitTemplate $unitTemplate): bool
+    {
+        $name = strtolower($unitTemplate->getName());
+        $divisionName = strtolower(trim($unitTemplate->getDivision()?->getName() ?? ''));
+
+        if ($name === 'veteran squad') {
+            return str_contains($divisionName, 'rifle');
+        }
+
+        return true;
+    }
+
     private function platoonCommanderConfig(UnitTemplate $unitTemplate): array
     {
         return [
             'composition' => '1 Officer',
-            'base_size' => 0, // only officer, men added via extras
+            'base_size' => 0,
             'extra_allowance' => 5,
             'weapons' => ['Rifle'],
             'special_rules' => [],
