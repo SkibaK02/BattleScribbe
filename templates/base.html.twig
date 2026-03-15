@@ -21,11 +21,9 @@
 
                 <nav class="nav-links" aria-label="Main navigation">
                     {% if app.user %}
-                        <a href="{{ path('app_dashboard') }}" class="{{ app.request.get('_route') in ['app_dashboard', 'app_faction_divisions', 'app_division_slots', 'app_unit_template_form'] ? 'active' : '' }}">Dashboard</a>
                         <a href="{{ path('app_account') }}" class="{{ app.request.get('_route') == 'app_account' ? 'active' : '' }}">Account</a>
                         <a href="{{ path('app_logout') }}" class="accent">Log out</a>
                     {% else %}
-                        <a href="{{ path('app_landing') }}" class="{{ app.request.get('_route') == 'app_landing' ? 'active' : '' }}">Home</a>
                         <a href="{{ path('app_login') }}" class="{{ app.request.get('_route') starts with 'app_login' ? 'active' : '' }}">Login</a>
                         <a href="{{ path('app_register_form') }}" class="{{ app.request.get('_route') starts with 'app_register' ? 'active' : '' }}">Register</a>
                     {% endif %}

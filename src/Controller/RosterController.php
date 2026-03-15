@@ -42,7 +42,6 @@ class RosterController extends AbstractController
                 throw $this->createAccessDeniedException();
             }
         } else {
-            // pick first army if exists
             $armies = $armyInstanceRepository->findByOwnerAndFaction($user, $faction->getId());
             $army = $armies[0] ?? null;
         }

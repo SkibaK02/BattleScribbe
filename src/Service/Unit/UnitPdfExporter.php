@@ -9,7 +9,7 @@ use App\Entity\Faction;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-class UnitPdfExporter
+final readonly class UnitPdfExporter
 {
     public function __construct(
         private readonly UnitConfigProvider $configProvider
@@ -59,7 +59,6 @@ class UnitPdfExporter
     {
         $rows = '';
         $usedOptions = [];
-        // group by roster
         $byRoster = [];
         foreach ($rowsData as $item) {
             $rosterName = $item['roster'] ?? 'Roster';
@@ -148,17 +147,14 @@ HTML;
 
         $parts = [];
 
-        // Composition details with NCO always present (if base > 0)
         $experienceLabel = ucfirst(strtolower($build->getExperience()));
         $ncoWeapon = !empty($options['nco_smg']) ? 'SMG' : 'Rifle';
         if ($menCount > 0) {
             $soldiers = max(0, $menCount - 1);
             $parts[] = sprintf('1x NCO %s', $ncoWeapon);
             if ($soldiers > 0) {
-                // weapon breakdown
                 $smgCount = min((int)($options['men_smg_count'] ?? 0), $soldiers);
                 $lmgCount = (int)($options['lmg_count'] ?? 0);
-                // ensure lmg doesn't exceed remaining soldiers
                 $lmgCount = min($lmgCount, max(0, $soldiers - $smgCount));
                 $rifleCount = max(0, $soldiers - $smgCount - $lmgCount);
                 if ($rifleCount > 0) {
@@ -173,7 +169,6 @@ HTML;
             }
         }
 
-        // Officer sidearm/SMG
         if (!empty($options['officer_smg'])) {
             $parts[] = 'Officer with SMG';
         }
@@ -181,17 +176,14 @@ HTML;
             $parts[] = 'Officer with pistol';
         }
 
-        // Special trainings
         if (!empty($options['sas_training'])) {
             $parts[] = 'SAS training';
         }
 
-        // Medic special text
         if ($template->getName() === 'Field Medic') {
             $parts[] = 'Healing aura 12"';
         }
 
-        // Mortar/machine-gun variants (heavy platoon)
         if (!empty($options['mortar_type'])) {
             $parts[] = 'Mortar: ' . $this->e(ucfirst($options['mortar_type']));
         }
@@ -199,7 +191,6 @@ HTML;
             $parts[] = 'Machine-gun: ' . $this->e(strtoupper($options['mg_variant']));
         }
 
-        // Vehicle options
         if (!empty($options['add_lkm'])) {
             $parts[] = 'LKM';
         }
@@ -225,7 +216,6 @@ HTML;
         $usedOptions = [];
         foreach ($divisionData as $divisionName => $rowsData) {
             $rows .= sprintf('<tr><td colspan="4" style="background:#f2f2f2;font-weight:bold;">%s</td></tr>', $this->e($divisionName));
-            // group by roster within division
             $byRoster = [];
             foreach ($rowsData as $item) {
                 $rosterName = $item['roster'] ?? 'Roster';

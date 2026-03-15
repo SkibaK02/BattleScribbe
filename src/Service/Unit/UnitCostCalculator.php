@@ -33,7 +33,6 @@ class UnitCostCalculator
 
         $intelligenceSelected = !empty($data['intelligence']);
         $total = $experienceCosts[$experience];
-        // Base size can be provided per template (e.g., rifle section)
         $baseSize = $config['base_size'] ?? 0;
         $extraAllowance = $config['extra_allowance'] ?? 0;
         $maxAdditional = $extraAllowance + ($intelligenceSelected ? 5 : 0);

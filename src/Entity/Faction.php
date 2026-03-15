@@ -15,7 +15,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(normalizationContext: ['groups' => ['faction:read', 'faction:read:full']]),
         new GetCollection(normalizationContext: ['groups' => ['faction:read']]),
-        // Brak Post, Put, Delete - frakcje są tylko do odczytu!
     ],
     order: ['name' => 'ASC']
 )]

@@ -117,7 +117,6 @@ class ArmyController extends AbstractController
 
         $factionId = $army->getFaction()?->getId();
 
-        // Remove builds and rosters tied to this army
         $rosters = $rosterDivisionRepository->findBy(['armyInstance' => $army]);
         foreach ($rosters as $rd) {
             foreach ($unitBuildRepository->findByOwnerAndRosterDivision($user, $rd->getId()) as $build) {
