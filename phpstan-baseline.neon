@@ -397,18 +397,6 @@ parameters:
 			path: src/Service/Unit/UnitPdfExporter.php
 
 		-
-			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:isBritish\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/Unit/UnitPdfExporter.php
-
-		-
-			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:isBritishFaction\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: src/Service/Unit/UnitPdfExporter.php
-
-		-
 			message: '#^Method App\\Service\\Unit\\UnitPdfExporter\:\:optionReferenceHtml\(\) has parameter \$used with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1

@@ -445,18 +445,4 @@ HTML;
     {
         return htmlspecialchars($text ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
-
-    private function isBritish(Division $division): bool
-    {
-        $faction = $division->getFaction();
-        if (!$faction) {
-            return false;
-        }
-        return stripos($faction->getName(), 'brit') !== false || stripos($faction->getName(), 'uk') !== false;
-    }
-
-    private function isBritishFaction(Faction $faction): bool
-    {
-        return stripos($faction->getName(), 'brit') !== false || stripos($faction->getName(), 'uk') !== false;
-    }
 }
