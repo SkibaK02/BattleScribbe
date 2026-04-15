@@ -4,13 +4,17 @@
 
 {% block body %}
 <section class="selection-hero">
+    {% set backToPlatoonsParams = {id: rosterDivision.division.faction.id} %}
+    {% if rosterDivision.armyInstance %}
+        {% set backToPlatoonsParams = backToPlatoonsParams|merge({army: rosterDivision.armyInstance.id}) %}
+    {% endif %}
     <div>
         <p class="selection-kicker">{{ rosterDivision.division.name }}</p>
         <h1 class="selection-title">{{ rosterDivision.name }}</h1>
         <p class="selection-subtitle">{{ rosterDivision.division.description }}</p>
     </div>
     <div class="selection-actions">
-        <a class="selection-btn ghost" href="{{ path('app_faction_rosters', {id: rosterDivision.division.faction.id}) }}">← Back to platoons</a>
+        <a class="selection-btn ghost" href="{{ path('app_faction_rosters', backToPlatoonsParams) }}">← Back to platoons</a>
     </div>
 </section>
 

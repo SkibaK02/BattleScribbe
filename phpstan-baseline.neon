@@ -403,12 +403,6 @@ parameters:
 			path: src/Service/Unit/UnitPdfExporter.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: src/Service/Unit/UnitPdfExporter.php
-
-		-
 			message: '#^Offset ''build'' does not exist on array\<int, App\\Entity\\UnitBuild\>\.$#'
 			identifier: offsetAccess.notFound
 			count: 2

@@ -100,6 +100,7 @@ class RosterController extends AbstractController
         }
 
         $factionId = $rosterDivision->getDivision()?->getFaction()?->getId();
+        $armyId = $rosterDivision->getArmyInstance()?->getId();
 
         $entityManager->remove($rosterDivision);
         $entityManager->flush();
@@ -107,7 +108,12 @@ class RosterController extends AbstractController
         $this->addFlash('success', 'Roster removed.');
 
         if ($factionId) {
-            return $this->redirectToRoute('app_faction_rosters', ['id' => $factionId]);
+            $redirectParams = ['id' => $factionId];
+            if ($armyId) {
+                $redirectParams['army'] = $armyId;
+            }
+
+            return $this->redirectToRoute('app_faction_rosters', $redirectParams);
         }
         return $this->redirectToRoute('app_dashboard');
     }

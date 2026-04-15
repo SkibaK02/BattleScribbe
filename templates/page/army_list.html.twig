@@ -28,6 +28,7 @@
     .roster-item__header { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; }
     .roster-units { margin: 6px 0 0 0; padding-left: 16px; }
     .roster-pill { padding: 2px 8px; border-radius: 999px; background: #eef2ff; font-size: 12px; color: #3f4f8a; }
+    .selection-grid.army-stack { grid-template-columns: 1fr; }
 </style>
 
 <section class="selection-hero">
@@ -41,7 +42,7 @@
     </div>
 </section>
 
-<section class="selection-grid">
+<section class="selection-grid army-stack">
     {% if armies %}
         {% for army in armies %}
             <div class="selection-card">

@@ -6,3 +6,4 @@ grumphp:
     phpstan:
       configuration: phpstan.neon
       memory_limit: '-1'
+      use_grumphp_paths: false
